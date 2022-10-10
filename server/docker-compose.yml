@@ -1,0 +1,24 @@
+version: "3.9"
+services:
+  api:
+    build: .
+    command: npm start
+    volumes:
+      - .:/usr/src/app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongodb
+    environment:
+      - MONGODB_URI=mongodb://mongodb:27017/wagyu
+      - PORT=3000
+      - TOKEN_SECRET=2d57079ad13b2779b0cd17b4fecf94b6
+      - TEAMSERVER_URI=http://localhost:3000
+  mongodb:
+    image: mongo:latest
+#    volumes:
+#      - ~/.wagyu/db:/data/db
+  mongo_seed:
+    build: ./mongo-seed
+    depends_on:
+        - mongodb

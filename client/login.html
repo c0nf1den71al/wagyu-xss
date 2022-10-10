@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,700;0,900;1,400&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    },
+                },
+            }
+        }
+    </script>
+    <title>Wagyu Client</title>
+</head>
+<body>
+<div class="flex h-screen w-screen">
+    <!-- Left -->
+    <div class="flex flex-col justify-center flex-1 h-full">
+        <div class="pl-10">
+            <h1 class="text-4xl font-bold">Login</h1>
+            <p class="text-gray-400">Authenticate using your Wagyu credentials.</p>
+        </div>
+        <div class="p-10 flex flex-col">
+            <label class="font-medium">Team Server</label>
+            <div class="flex w-full">
+                <select id="protocol" class="w-1/6 appearance-none border bg-gray-100 py-2 px-3 leading-tight mb-5" style="border-radius: 0.375rem 0rem 0rem 0.375rem; border-right: none;">
+                    <option value="http://">http://</option>
+                    <option value="https://">https://</option>
+                </select>
+                <input type="text" placeholder="localhost:3000" name="host" id="host" class="w-5/6 appearance-none border rounded-r-md py-2 px-3 leading-tight mb-5">
+<!--                <input type="number" name="port" id="port" value="3000" class="w-1/6 appearance-none border-y border-r bg-gray-100 rounded-r-md py-2 px-3 leading-tight mb-5">-->
+            </div>
+
+            <label class="font-medium" for="username">Username</label>
+            <input type="text" placeholder="wagyu" name="username" id="username" class="appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5">
+            <label class="font-medium" for="password">Password</label>
+            <input type="password" placeholder="••••••••" name="password" id="password" class="appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5">
+            <button id="login" class="py-2 px-3 w-1/6 bg-rose-300 text-rose-800 rounded-md font-bold">Go!</button>
+        </div>
+    </div>
+    <!-- Right -->
+    <div class="flex flex-col items-center justify-center flex-1 bg-rose-400 h-full">
+        <img src="images/steak.png" alt="Wagyu Logo">
+        <h1 class="text-5xl font-bold pb-10">Wagyu</h1>
+    </div>
+</div>
+<script>
+    const { ipcRenderer } = require('electron');
+
+    document.getElementById("login").addEventListener("click", () => {
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+        const server = document.getElementById("protocol").value + document.getElementById("host").value;
+        ipcRenderer.send("login", username, password, server)
+    })
+</script>
+<style>
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    *:focus {
+        outline: none;
+    }
+</style>
+</body>
+</html>

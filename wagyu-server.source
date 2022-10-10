@@ -1,0 +1,17 @@
+#!/bin/bash
+# Compile this script into a binary using 'shc -f wagyu-server.source -o wagyu'
+
+if [ $1 = "install" ]; then
+  cd ./team-server
+  npm install
+  docker build .
+  docker-compose up -d
+elif [ $1 = "start" ]; then
+  cd ./team-server
+  docker-compose up -d
+elif [ $1 = "stop" ]; then
+  cd ./team-server
+  docker-compose down
+else
+  echo "Invalid argument"
+fi

@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,700;0,900;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    },
+                    backgroundColor: ['even'],
+                },
+            }
+        }
+    </script>
+    <title>Wagyu Client</title>
+</head>
+<body>
+<div class="flex flex-col h-screen w-screen">
+    <!-- Navbar -->
+    <div class="flex w-full h-15 justify-between p-3.5 shadow-md z-50">
+            <!-- Brand -->
+            <div class="flex items-center">
+                <img class="w-10" src="images/steak.png" alt="Tailwind CSS Logo">
+                <h1 class="text-2xl font-bold pl-2">Wagyu</h1>
+            </div>
+
+            <!-- Navbar -->
+            <ul class="flex">
+                <button class="bg-rose-300 text-rose-800 rounded-md px-3.5">Logout</button>
+            </ul>
+    </div>
+    <!-- Main -->
+    <div class="flex flex-col justify-center flex-1 h-full">
+        <!-- Top -->
+        <div class="h-2/3 grow flex flex-row">
+            <!-- Hosts -->
+            <div class="w-3/4 overflow-auto">
+                <!-- Top bar -->
+                <div class="w-full h-10 flex flex-row justify-between">
+                    <div class="flex">
+                        <div id="hosts-tab" class="h-full py-2 px-4 bg-rose-100 cursor-pointer font-medium">Hosts</div>
+                        <div id="payloads-tab" class="h-full py-2 px-4 cursor-pointer hover:bg-rose-50">Payloads</div>
+                        <div id="implants-tab" class="h-full py-2 px-4 cursor-pointer hover:bg-rose-50">Implants</div>
+                        <div id="findings-tab" class="h-full py-2 px-4 cursor-pointer hover:bg-rose-50">Findings</div>
+                    </div>
+                    <div id="refresh" class="h-full py-2 px-4 hover:rotate-180 duration-300 cursor-pointer font-medium"><i class="fa-solid fa-rotate-right"></i></div>
+                </div>
+
+                <!-- Hosts table -->
+                <table id="hosts-table" class="w-full">
+                    <thead class="bg-slate-100">
+                        <tr>
+                            <th class="border font-medium px-4 py-2">ID</th>
+                            <th class="border font-medium px-4 py-2">Current Status</th>
+                            <th class="border font-medium px-4 py-2">Public IP</th>
+                            <th class="border font-medium px-4 py-2">OS</th>
+                            <th class="border font-medium px-4 py-2">Browser</th>
+                            <th class="border font-medium px-4 py-2">Current Tab</th>
+                            <th class="border font-medium px-4 py-2">Last Seen</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-center" id="hosts-table-body"></tbody>
+                    <tfoot>
+                        <tr>
+                            <td class="px-4 py-2 text-slate-300 text-center" colspan="7">Continue compromising hosts for them to show here...</td>
+                        </tr>
+                    </tfoot>
+                </table>
+
+                <!-- Payloads table -->
+                <table id="payloads-table" class="w-full hidden">
+                    <thead class="bg-slate-100">
+                    <tr>
+                        <th class="border font-medium px-4 py-2">Name</th>
+                        <th class="border font-medium px-4 py-2">Description</th>
+                        <th class="border font-medium px-4 py-2">Compatability</th>
+                        <th class="border font-medium px-4 py-2">Type</th>
+                        <th class="border font-medium px-4 py-2">Author</th>
+                        <th class="border font-medium px-4 py-2">Risk <i class="pl-1 fa-regular fa-circle-question fa-xs text-blue-600 cursor-pointer"></i></th>
+                    </tr>
+                    </thead>
+                    <tbody id="payloads-table-body" class="text-center"></tbody>
+                    <tfoot>
+                    <tr>
+                        <td class="px-4 py-2 text-slate-300 text-center" colspan="6">Create more payloads for them to show here...</td>
+                    </tr>
+                    </tfoot>
+                </table>
+
+                <!-- Implants Table -->
+                <table id="implants-table" class="w-full hidden">
+                    <thead class="bg-slate-100">
+                    <tr>
+                        <th class="border font-medium px-4 py-2">ID</th>
+                        <th class="border font-medium px-4 py-2">Date Created</th>
+                        <th class="border font-medium px-4 py-2">Callback Server</th>
+                        <th class="border font-medium px-4 py-2">Callback Interval</th>
+                        <th class="border font-medium px-4 py-2">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody id="implants-table-body" class="text-center"></tbody>
+                    <tfoot>
+                        <tr>
+                            <td class="px-4 py-2 text-slate-300 text-center" colspan="6">Create more implants for them to show here...</td>
+                        </tr>
+                    </tfoot>
+                </table>
+
+                <!-- Findings Table -->
+                <table id="findings-table" class="w-full hidden">
+                    <thead class="bg-slate-100">
+                    <tr>
+                        <th class="border font-medium px-4 py-2">Date Created</th>
+                        <th class="border font-medium px-4 py-2">Name</th>
+                        <th class="border font-medium px-4 py-2">Value</th>
+                        <th class="border font-medium px-4 py-2">Associated Host</th>
+                        <th class="border font-medium px-4 py-2">Delete</th>
+                    </tr>
+                    </thead>
+                    <tbody id="implants-table-body" class="text-center"></tbody>
+                    <tfoot>
+                        <tr>
+                            <td class="px-4 py-2 text-slate-300 text-center" colspan="5">Execute payloads for the findings to show here...</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            <!-- Event Log -->
+            <div class="w-1/4 bg-slate-500 flex flex-col justify-between" onclick="document.getElementById('chatbox').focus()">
+                <!-- Top bar -->
+                <div class="w-full h-10 flex flex-row bg-white justify-between">
+                    <div class="h-full py-2 px-4 bg-rose-100 cursor-pointer font-medium">Event Log</div>
+                    <div class="flex">
+                        <div class="h-full py-2 px-4 bg-slate-100 cursor-pointer font-medium"><i class="fa-solid fa-download"></i></div>
+                        <div class="h-full py-2 px-4 bg-slate-100 cursor-pointer font-medium"><i class="fa-solid fa-filter"></i></div>
+                    </div>
+                </div>
+                <div id="eventLog" class="text-sm overflow-y-auto pt-1.5 h-full"></div>
+                <input type="text" id="chatbox" class=" text-sm bg-slate-400 px-1.5 py-0.5 text-white placeholder:text-slate-200" placeholder="Type here to chat...">
+            </div>
+        </div>
+
+        <!-- Command Line -->
+        <div class="h-1/3 bg-slate-100 p-5 relative overflow-auto" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <div id="commandOutput" class="text-sm"></div> <!-- Insert command output here -->
+            <!-- Input -->
+            <div class="flex text-sm">
+                <p id="cli-identity" class="text-rose-400 font-semibold whitespace-nowrap pr-2.5">wagyu@wagyu #</p>
+                <input type="text" id="command" ondrop="drop(event)" ondragover="allowDrop(event)" class="bg-transparent font-normal w-full" placeholder="Command...">
+            </div>
+            <!-- Drag and drop overlay -->
+            <div id="dragDropOverlay" class="absolute bg-rose-100 opacity-75 inset-0 p-16 hidden">
+                <div class="relative border-4 rounded-md opacity-100 border-rose-500 border-dashed h-full flex justify-center items-center">
+                    <i class="fa-solid fa-plus fa-4x opacity-100 text-rose-500 pr-3"></i>
+                    <p class="opacity-100 text-rose-500 font-semibold text-lg pl-3">Drag a host here to autofill...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    const { ipcRenderer, remote, shell } = require('electron')
+    const { parseUserAgent } = require("./hosts")
+
+    let commandHistory = []
+    let commandHistoryIndex = 0
+
+    // Tabs
+    const hostsTab = document.getElementById("hosts-tab");
+    const hostsTable = document.getElementById("hosts-table");
+    const payloadsTab = document.getElementById("payloads-tab");
+    const payloadsTable = document.getElementById("payloads-table");
+    const implantsTab = document.getElementById("implants-tab");
+    const implantsTable = document.getElementById("implants-table");
+    const findingsTab = document.getElementById("findings-tab");
+    const findingsTable = document.getElementById("findings-table");
+
+    // XSS Prevention - please use this function when inserting text into the DOM
+    function xssSanitize(input) {
+        return input.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+
+    payloadsTab.addEventListener("click", () => {
+        payloadsTab.classList.add("bg-rose-100");
+        payloadsTab.classList.remove("hover:bg-rose-50");
+        payloadsTab.classList.add("font-medium");
+        payloadsTable.classList.remove("hidden");
+        hostsTab.classList.remove("bg-rose-100");
+        hostsTab.classList.add("hover:bg-rose-50");
+        hostsTab.classList.remove("font-medium");
+        hostsTable.classList.add("hidden");
+        implantsTab.classList.remove("bg-rose-100");
+        implantsTab.classList.add("hover:bg-rose-50");
+        implantsTab.classList.remove("font-medium");
+        implantsTable.classList.add("hidden");
+        findingsTable.classList.add("hidden");
+        findingsTab.classList.remove("bg-rose-100");
+        findingsTab.classList.remove("font-medium");
+        findingsTab.classList.add("hover:bg-rose-50");
+    });
+
+    hostsTab.addEventListener("click", () => {
+        hostsTab.classList.add("bg-rose-100");
+        hostsTab.classList.remove("hover:bg-rose-50");
+        hostsTab.classList.add("font-medium");
+        hostsTable.classList.remove("hidden");
+        payloadsTab.classList.remove("bg-rose-100");
+        payloadsTab.classList.add("hover:bg-rose-50");
+        payloadsTab.classList.remove("font-medium");
+        payloadsTable.classList.add("hidden");
+        implantsTab.classList.remove("bg-rose-100");
+        implantsTab.classList.add("hover:bg-rose-50");
+        implantsTab.classList.remove("font-medium");
+        implantsTable.classList.add("hidden");
+        findingsTable.classList.add("hidden");
+        findingsTab.classList.remove("bg-rose-100");
+        findingsTab.classList.add("hover:bg-rose-50");
+        findingsTab.classList.remove("font-medium");
+    });
+
+    implantsTab.addEventListener("click", () => {
+        implantsTab.classList.add("bg-rose-100");
+        implantsTab.classList.remove("hover:bg-rose-50");
+        implantsTab.classList.add("font-medium");
+        implantsTable.classList.remove("hidden");
+        payloadsTab.classList.remove("bg-rose-100");
+        payloadsTab.classList.add("hover:bg-rose-50");
+        payloadsTab.classList.remove("font-medium");
+        payloadsTable.classList.add("hidden");
+        hostsTab.classList.remove("bg-rose-100");
+        hostsTab.classList.add("hover:bg-rose-50");
+        hostsTab.classList.remove("font-medium");
+        hostsTable.classList.add("hidden");
+        findingsTable.classList.add("hidden");
+        findingsTab.classList.remove("bg-rose-100");
+        findingsTab.classList.add("hover:bg-rose-50");
+        findingsTab.classList.remove("font-medium");
+    });
+
+    findingsTab.addEventListener("click", () => {
+        findingsTab.classList.add("bg-rose-100");
+        findingsTab.classList.remove("hover:bg-rose-50");
+        findingsTab.classList.add("font-medium");
+        findingsTable.classList.remove("hidden");
+        payloadsTab.classList.remove("bg-rose-100");
+        payloadsTab.classList.add("hover:bg-rose-50");
+        payloadsTab.classList.remove("font-medium");
+        payloadsTable.classList.add("hidden");
+        hostsTab.classList.remove("bg-rose-100");
+        hostsTab.classList.add("hover:bg-rose-50");
+        hostsTab.classList.remove("font-medium");
+        hostsTable.classList.add("hidden");
+        implantsTable.classList.add("hidden");
+        implantsTab.classList.remove("bg-rose-100");
+        implantsTab.classList.add("hover:bg-rose-50");
+        implantsTab.classList.remove("font-medium");
+    });
+
+    ipcRenderer.invoke("getAllEventLogs")
+    ipcRenderer.on('eventLogs', (event, eventLogs) => {
+        // Clear current event logs from DOM
+        document.getElementById("eventLog").innerHTML = "";
+
+        eventLogs.forEach(log => {
+            const timestamp = new Date(log.timestamp).toLocaleTimeString()
+            const createdBy = xssSanitize(log.createdBy)
+            const message = xssSanitize(log.message)
+            switch(log.type) {
+                case "info":
+                    document.getElementById("eventLog").innerHTML += `<p class="text-white px-1.5">[${timestamp}][${createdBy}] ${message}</p>`
+                    break;
+                case "success":
+                    document.getElementById("eventLog").innerHTML += `<p class="text-green-500 px-1.5">[${timestamp}][${createdBy}] ${message}</p>`
+                    break;
+                case "error":
+                    document.getElementById("eventLog").innerHTML += `<p class="text-red-500 px-1.5">[${timestamp}][${createdBy}] ${message}</p>`
+                    break;
+                case "warning":
+                    document.getElementById("eventLog").innerHTML += `<p class="text-yellow-400 px-1.5">[${timestamp}][${createdBy}] ${message}</p>`
+                    break;
+                case "chat":
+                    document.getElementById("eventLog").innerHTML += `<p class="text-blue-400 px-1.5">[${timestamp}][${createdBy}] ${message}</p>`
+                    break;
+            }
+        });
+    })
+
+    document.getElementById("chatbox").addEventListener("keyup", function(event) {
+        if (event.key === "Enter") {
+            const message = document.getElementById("chatbox").value
+            ipcRenderer.invoke("createEventLog", message, "chat")
+        }
+    });
+
+    ipcRenderer.on('chatSent', (event) => {
+        document.getElementById("chatbox").value = ""
+        document.getElementById("eventLog").scrollTop = document.getElementById("eventLog").scrollHeight; // Scroll to bottom of event log
+        ipcRenderer.invoke("getAllEventLogs") // Temporary solution to update chat
+    })
+
+    document.getElementById("refresh").addEventListener("click", () => {
+        ipcRenderer.invoke("getAllEventLogs")
+        ipcRenderer.invoke("getAllImplants")
+        ipcRenderer.invoke("getAllPayloads")
+        ipcRenderer.invoke("getAllHosts")
+    })
+
+    setInterval(() => {
+        ipcRenderer.invoke("getAllEventLogs")
+        ipcRenderer.invoke("getAllImplants")
+        ipcRenderer.invoke("getAllPayloads")
+        ipcRenderer.invoke("getAllHosts")
+    }, 2500);
+
+    ipcRenderer.invoke("getAllImplants")
+    ipcRenderer.on("implants", (event, implants, serverDomain) => {
+        // Clear current implants from DOM
+        document.getElementById("implants-table-body").innerHTML = "";
+
+        implants.forEach(implant => {
+            const timestamp = new Date(implant.timestamp).toLocaleString()
+            const implantId = xssSanitize(implant._id.toString())
+            const implantServer = xssSanitize(implant.server)
+            const implantLink = xssSanitize(`${serverDomain}/implants/${implantId}.js`)
+            const implantCallback = implant.callbackInterval / 1000
+            const tableRow = `<tr class="hover:bg-slate-100 cursor-pointer">
+                <td class="border px-4 py-2 truncate">${implantId}</td>
+                <td class="border px-4 py-2 truncate text-center">${timestamp}</td>
+                <td class="border px-4 py-2 truncate">${implantServer}</td>
+                <td class="border px-4 py-2 truncate">${implantCallback} Seconds</td>
+                <td class="border px-4 py-2 truncate"><i onclick="navigator.clipboard.writeText('${implantLink}')" class="fa-solid fa-copy px-2"></i><i onclick="shell.openExternal('${implantLink}')" class="fa-solid px-2 fa-arrow-up-right-from-square"></i><i onclick="ipcRenderer.invoke('deleteImplantById', '${implantId}')" class="px-2 fa-solid fa-trash-can"></i></td></td>
+            </tr>`
+            document.getElementById("implants-table-body").innerHTML += tableRow
+        }) 
+    })
+
+    ipcRenderer.on("refreshImplants", () => {
+        ipcRenderer.invoke("getAllImplants")
+    });
+
+    ipcRenderer.invoke("getAllPayloads")
+    ipcRenderer.on("payloads", (event, payloads) => {
+        // Clear current payloads from DOM
+        document.getElementById("payloads-table-body").innerHTML = "";
+        payloads.forEach(payload => {
+            const payloadName = xssSanitize(payload.name)
+            const payloadDescription = xssSanitize(payload.description)
+            const payloadCompatibility = xssSanitize(payload.compatibility)
+            const payloadType = xssSanitize(payload.type)
+            const payloadAuthor = xssSanitize(payload.author)
+            const payloadRisk = payload.risk
+            const tableRow = `<tr class="hover:bg-slate-100 cursor-pointer" draggable="true" ondragend="dragEnd()" ondragstart="drag(event)">
+                <td class="border px-4 py-2 truncate">${payloadName}</td>
+                <td class="border px-4 py-2 truncate text-left">${payloadDescription}</td>
+                <td class="border px-4 py-2 truncate">${payloadCompatibility}</td>
+                <td class="border px-4 py-2 truncate">${payloadType}</td>
+                <td class="border px-4 py-2 truncate">${payloadAuthor}</td> 
+                <td class="border px-4 py-2 truncate">${payloadRisk}</td>
+            </tr>`
+            document.getElementById("payloads-table-body").innerHTML += tableRow
+        }) 
+    })
+
+    ipcRenderer.invoke("getAllHosts")
+    ipcRenderer.on("hosts", (event, hosts) => {
+        // Clear current hosts from DOM
+        document.getElementById("hosts-table-body").innerHTML = "";
+        hosts.forEach(host => {
+            const hostId = xssSanitize(host._id.toString())
+            const hostExternalIP = xssSanitize(host.externalIP)
+            const parsedUserAgent = parseUserAgent(host.userAgent)
+            const hostBrowser = xssSanitize(parsedUserAgent.browser)
+            const hostOS = xssSanitize(parsedUserAgent.os)
+            const hostCurrentTab = xssSanitize(host.currentTab)
+            const diff = Math.round(Math.abs(new Date() - new Date(host.lastCheckIn)) / 1000)
+            const hostLastSeen = diff < 60 ? `${diff} seconds ago` : `${Math.round(diff / 60)} minutes ago`
+            const tableRow = `<tr class="hover:bg-slate-100 cursor-pointer" draggable="true" ondragend="dragEnd()" ondragstart="drag(event)">
+                <td class="border px-4 py-2 truncate">${hostId}</td>
+                ${diff < 300 ? '<td class="border px-4 py-2 truncate"><a class="h-5 w-5 bg-green-200 text-green-800 rounded-md px-4">Online</a></td>' : '<td class="border px-4 py-2 truncate"><a class="h-5 w-5 bg-red-200 text-red-800 rounded-md px-4">Offline</a></td>'}
+                <td class="border px-4 py-2 truncate">${hostExternalIP}</td>
+                <td class="border px-4 py-2 truncate">${hostOS}</td>
+                <td class="border px-4 py-2 truncate">${hostBrowser}</td>
+                <td class="border px-4 py-2 truncate">${hostCurrentTab}</td>
+                <td class="border px-4 py-2 truncate">${hostLastSeen}</td>       
+            </tr>`
+            document.getElementById("hosts-table-body").innerHTML += tableRow
+        })
+    })
+
+    const commandInput = document.getElementById("command");
+    commandInput.focus(); // Focus input onload
+
+    commandInput.addEventListener("keydown", function(event) {
+        if (event.key === "Enter" && commandInput.value !== "") {
+            commandHistoryIndex = 0;
+            if (commandInput.value === "clear") {
+                document.getElementById("commandOutput").innerHTML = ""
+                ipcRenderer.invoke("processCommand", commandInput.value)
+                commandInput.value = ""
+            } else {
+                ipcRenderer.invoke("processCommand", commandInput.value)
+                .then((result => {
+                    commandHistory = result.history
+                    const type = result.type
+                    let output = result.message
+                    output = xssSanitize(output)
+
+                    if (type === "error") {
+                        document.getElementById("commandOutput").innerHTML += `<pre class="text-red-600">${output}</pre>`;
+                    } else if (type === "success") {
+                        document.getElementById("commandOutput").innerHTML += `<pre class="text-green-500">${output}</pre>`;
+                    }else {
+                        document.getElementById("commandOutput").innerHTML += `<pre>${output}</pre>`;
+                    }
+
+                    commandInput.value = "";
+                }));
+            }
+        } else if(event.key === "ArrowUp") {
+            if (commandHistoryIndex < commandHistory.length) {
+                commandHistoryIndex++;
+                commandInput.value = commandHistory[commandHistory.length - commandHistoryIndex];
+                commandInput.selectionStart = commandInput.selectionEnd = commandInput.value.length;
+            }
+        } else if(event.key === "ArrowDown") {
+            if (commandHistoryIndex > 0) {
+                commandHistoryIndex--;
+                if (commandHistoryIndex === 0) {
+                    commandInput.value = "";
+                } else {
+                    commandInput.value = commandHistory[commandHistory.length - commandHistoryIndex];
+                    commandInput.selectionStart = commandInput.selectionEnd = commandInput.value.length;
+                }
+            }
+        } else {
+            commandHistoryIndex = 0;
+        }
+    });
+
+
+
+    function allowDrop(event) {
+        event.preventDefault();
+
+    }
+
+    function dragEnd(){
+        document.getElementById("dragDropOverlay").classList.add("hidden");
+    }
+
+    function drag(event) {
+        const host = event.target.cells[0].innerText
+        document.getElementById("dragDropOverlay").classList.remove("hidden");
+        event.dataTransfer.setData("host", host);
+    }
+
+    function drop(event) {
+        event.stopPropagation();
+        event.preventDefault();
+        const data = event.dataTransfer.getData("host");
+        document.getElementById("command").value += data + " ";
+    }
+
+</script>
+<style>
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    *:focus {
+        outline: none;
+    }
+
+</style>
+</body>
+</html>

