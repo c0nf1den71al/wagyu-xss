@@ -20,11 +20,13 @@ const payloadRoutes = require("./routes/payloadRoute");
 const commandRoutes = require("./routes/commandRoute");
 const exploitRoutes = require("./routes/exploitRoute");
 const hostRoutes = require("./routes/hostRoute");
+const findingRoute = require("./routes/findingRoute");
 
 app.use("/api/v1/", authRoutes)
 app.use("/api/v1/events", eventViewerRoutes);
 app.use("/api/v1/payloads", payloadRoutes);
 app.use("/api/v1/command", commandRoutes);
+app.use("/api/v1/findings", findingRoute);
 app.use("/", implantRoutes);
 app.use("/", hostRoutes);
 app.use("/", exploitRoutes); // Keep me last

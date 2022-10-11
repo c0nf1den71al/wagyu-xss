@@ -18,10 +18,6 @@ const findingSchema = new Schema({
         type: String,
         required: [true, "Finding must have an associated host"]
     },
-    type: {
-        type: String,
-        required: [true, "Finding must have a type"]
-    },
     value: {
         type: String,
         required: [true, "Finding must have a value"]

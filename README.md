@@ -36,6 +36,7 @@ A dynamic cross-site scripting (XSS) payload delivery system with team server ab
 ### Server
 - [x] Implant callback interval
 - [x] Validate teamserver address when generating implants (remove trailing /, add protocol etc).
+- [x] Send loot to findings tab
 - [ ] Validate user session
 - [ ] Account logout
 - [ ] Change Password
@@ -43,7 +44,6 @@ A dynamic cross-site scripting (XSS) payload delivery system with team server ab
 - [ ] More opperations need to be added to Event log
 - [ ] Export event log option
 - [ ] Obfuscate/Minify payloads
-- [ ] Send loot to findings tab
 
 ### Misc
 - [ ] Rename 'agents' or 'hooks'

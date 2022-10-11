@@ -1,10 +1,11 @@
 const { app, BrowserWindow, ipcMain, Menu, MenuItem } = require("electron")
-const login = require("./auth")
-const { getAllEventLogs, createEventLog } = require("./eventLogs")
-const { getAllImplants, deleteImplantById } = require("./implants");
-const { getAllPayloads } = require("./payloads");
-const { getAllHosts } = require("./hosts");
-const processCommand = require("./commands");
+const login = require("./helpers/auth")
+const { getAllEventLogs, createEventLog } = require("./helpers/eventLogs")
+const { getAllImplants, deleteImplantById } = require("./helpers/implants");
+const { getAllPayloads } = require("./helpers/payloads");
+const { getAllHosts } = require("./helpers/hosts");
+const { getAllFindings, deleteFindingById } = require("./helpers/findings");
+const processCommand = require("./helpers/commands");
 const path = require("path")
 const Store = require("electron-store");
 
@@ -63,10 +64,20 @@ const createWindow = () => {
     ipcMain.handle("getAllEventLogs", async (event) => {
         const jwt = store.get("session");
         const eventLogs = await getAllEventLogs(jwt);
-        if (await eventLogs) {
-            event.sender.send("eventLogs", eventLogs);
-        } // else {}
+        event.sender.send("eventLogs", eventLogs);
     });
+
+    ipcMain.handle("getAllFindings", async (event) => {
+        const jwt = store.get("session");
+        const findings = await getAllFindings(jwt);
+        event.sender.send("findings", findings);
+    })
+
+    ipcMain.handle("deleteFindingById", async (event, id) => {
+        const jwt = store.get("session");
+        await deleteFindingById(jwt, id);
+        event.sender.send("refreshFindings");
+    })
 
     ipcMain.handle("createEventLog", async (event, message, type) => {
         const jwt = store.get("session");

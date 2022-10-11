@@ -121,11 +121,12 @@
                         <th class="border font-medium px-4 py-2">Date Created</th>
                         <th class="border font-medium px-4 py-2">Name</th>
                         <th class="border font-medium px-4 py-2">Value</th>
+                        <th class="border font-medium px-4 py-2">Created By</th>
                         <th class="border font-medium px-4 py-2">Associated Host</th>
-                        <th class="border font-medium px-4 py-2">Delete</th>
+                        <th class="border font-medium px-4 py-2">Actions</th>
                     </tr>
                     </thead>
-                    <tbody id="implants-table-body" class="text-center"></tbody>
+                    <tbody id="findings-table-body" class="text-center"></tbody>
                     <tfoot>
                         <tr>
                             <td class="px-4 py-2 text-slate-300 text-center" colspan="5">Execute payloads for the findings to show here...</td>
@@ -169,7 +170,7 @@
 </div>
 <script>
     const { ipcRenderer, remote, shell } = require('electron')
-    const { parseUserAgent } = require("./hosts")
+    const { parseUserAgent } = require("./helpers/hosts")
 
     let commandHistory = []
     let commandHistoryIndex = 0
@@ -312,6 +313,7 @@
         ipcRenderer.invoke("getAllImplants")
         ipcRenderer.invoke("getAllPayloads")
         ipcRenderer.invoke("getAllHosts")
+        ipcRenderer.invoke("getAllFindings")
     })
 
     setInterval(() => {
@@ -319,7 +321,8 @@
         ipcRenderer.invoke("getAllImplants")
         ipcRenderer.invoke("getAllPayloads")
         ipcRenderer.invoke("getAllHosts")
-    }, 2500);
+        ipcRenderer.invoke("getAllFindings")
+    }, 5000);
 
     ipcRenderer.invoke("getAllImplants")
     ipcRenderer.on("implants", (event, implants, serverDomain) => {
@@ -345,6 +348,33 @@
 
     ipcRenderer.on("refreshImplants", () => {
         ipcRenderer.invoke("getAllImplants")
+    });
+
+    ipcRenderer.invoke("getAllFindings")
+    ipcRenderer.on("findings", (event, findings) => {
+        // Clear current findings from DOM
+        document.getElementById("findings-table-body").innerHTML = "";
+        findings.forEach(finding => {
+            const timestamp = new Date(finding.timestamp).toLocaleString()
+            const findingId = xssSanitize(finding._id.toString())
+            const findingName = xssSanitize(finding.name)
+            const findingValue = xssSanitize(finding.value)
+            const findingHostId = xssSanitize(finding.hostId)
+            const findingAuthor = xssSanitize(finding.createdBy)
+            const tableRow = `<tr class="hover:bg-slate-100 cursor-pointer">
+                <td class="border px-4 py-2 truncate">${timestamp}</td>
+                <td class="border px-4 py-2 truncate">${findingName}</td>
+                <td class="border px-4 py-2 truncate">${findingValue}</td>
+                <td class="border px-4 py-2 truncate">${findingAuthor}</td>
+                <td class="border px-4 py-2 truncate">${findingHostId}</td>
+                <td class="border px-4 py-2 truncate"><i onclick="navigator.clipboard.writeText('${findingValue}')" class="fa-solid fa-copy px-2"></i><i onclick="ipcRenderer.invoke('deleteFindingById', '${findingId}')" class="px-2 fa-solid fa-trash-can"></i></td></td>
+            </tr>`
+            document.getElementById("findings-table-body").innerHTML += tableRow
+        }) 
+    })
+
+    ipcRenderer.on("refreshFindings", () => {
+        ipcRenderer.invoke("getAllFindings")
     });
 
     ipcRenderer.invoke("getAllPayloads")
