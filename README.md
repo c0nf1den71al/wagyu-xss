@@ -4,20 +4,28 @@ A dynamic cross-site scripting (XSS) payload delivery system with team server ab
 - Standalone desktop client GUI
 - Collaborative Team Server
 
+![Client Login Page](./images/client-login.png) ![Client Payloads Table](./images/client-payloads.png)
 
 ---
 ## Manual Installation
 ### Team Server
 * Install [Docker](https://docs.docker.com/engine/installation/)
 * Clone this repository
-* Run `npm install` in the `/server` directory of the repository
-* Run `docker compose up -d` in the `/server` directory of the repository
+* `cd /server`
+* `npm install`
+* Modify the environment variables within the `docker-compose.yml` file:
+    - `PORT` is used to define the port the teamserver will run on
+    - `TOKEN_SECRET` is the secret used to sign JWTs
+    - `TEAMSERVER_URI` is the IP address or domain which members will use to authenticate into the teamserver
+* Run `docker compose up -d` to start the teamserver
+
 
 ### Client
 * Install [Node.js](https://nodejs.org/en/download/)
 * Clone this repository
 * Run `npm install` in the `/client` directory of the repository
 * Run `npm start` in the `/client` directory of the repository
+* Login with the default credentials `wagyu:wagyu`
 ---
 ## To-do List
 ### Client
@@ -46,8 +54,7 @@ A dynamic cross-site scripting (XSS) payload delivery system with team server ab
 - [ ] Obfuscate/Minify payloads
 
 ### Misc
-- [ ] Rename 'agents' or 'hooks'
-- [ ] Explain env vairables in README.md
+- [x] Explain env vairables in README.md
 - [ ] Wiki
 
 ## Payload Ideas
