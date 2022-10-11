@@ -23,8 +23,9 @@ A dynamic cross-site scripting (XSS) payload delivery system with team server ab
 ### Client
 * Install [Node.js](https://nodejs.org/en/download/)
 * Clone this repository
-* Run `npm install` in the `/client` directory of the repository
-* Run `npm start` in the `/client` directory of the repository
+* `cd /client`
+* `npm install`
+* `npm start`
 * Login with the default credentials `wagyu:wagyu`
 ---
 ## To-do List

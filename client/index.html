@@ -33,9 +33,10 @@
             </div>
 
             <!-- Navbar -->
-            <ul class="flex">
-                <button class="bg-rose-300 text-rose-800 rounded-md px-3.5">Logout</button>
-            </ul>
+            <div class="flex">
+                <button class="bg-rose-200 text-rose-800 rounded-md px-3.5 h-full flex items-center font-medium"><i class="fa-solid fa-gear pr-2"></i>Settings</button>
+                
+            </div>
     </div>
     <!-- Main -->
     <div class="flex flex-col justify-center flex-1 h-full">
@@ -46,12 +47,12 @@
                 <!-- Top bar -->
                 <div class="w-full h-10 flex flex-row justify-between">
                     <div class="flex">
-                        <div id="hosts-tab" class="h-full py-2 px-4 bg-rose-100 cursor-pointer font-medium">Hosts</div>
+                        <div id="hosts-tab" class="h-full py-2 px-4 bg-rose-200 text-rose-800 cursor-pointer font-medium">Hosts</div>
                         <div id="payloads-tab" class="h-full py-2 px-4 cursor-pointer hover:bg-rose-50">Payloads</div>
                         <div id="implants-tab" class="h-full py-2 px-4 cursor-pointer hover:bg-rose-50">Implants</div>
                         <div id="findings-tab" class="h-full py-2 px-4 cursor-pointer hover:bg-rose-50">Findings</div>
                     </div>
-                    <div id="refresh" class="h-full py-2 px-4 hover:rotate-180 duration-300 cursor-pointer font-medium"><i class="fa-solid fa-rotate-right"></i></div>
+                    <div id="refresh" class="h-full py-2 px-4 hover:rotate-180 duration-300 cursor-pointer font-medium" title="Refresh"><i class="fa-solid fa-rotate-right"></i></div>
                 </div>
 
                 <!-- Hosts table -->
@@ -65,6 +66,7 @@
                             <th class="border font-medium px-4 py-2">Browser</th>
                             <th class="border font-medium px-4 py-2">Current Tab</th>
                             <th class="border font-medium px-4 py-2">Last Seen</th>
+                            <th class="border font-medium px-4 py-2">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="text-center" id="hosts-table-body"></tbody>
@@ -85,6 +87,7 @@
                         <th class="border font-medium px-4 py-2">Type</th>
                         <th class="border font-medium px-4 py-2">Author</th>
                         <th class="border font-medium px-4 py-2">Risk <i class="pl-1 fa-regular fa-circle-question fa-xs text-blue-600 cursor-pointer"></i></th>
+                        <th class="border font-medium px-4 py-2">Actions</th>
                     </tr>
                     </thead>
                     <tbody id="payloads-table-body" class="text-center"></tbody>
@@ -139,14 +142,14 @@
             <div class="w-1/4 bg-slate-500 flex flex-col justify-between" onclick="document.getElementById('chatbox').focus()">
                 <!-- Top bar -->
                 <div class="w-full h-10 flex flex-row bg-white justify-between">
-                    <div class="h-full py-2 px-4 bg-rose-100 cursor-pointer font-medium">Event Log</div>
+                    <div class="h-full py-2 px-4 bg-rose-200 text-rose-800 cursor-pointer font-medium">Event Log</div>
                     <div class="flex">
-                        <div class="h-full py-2 px-4 bg-slate-100 cursor-pointer font-medium"><i class="fa-solid fa-download"></i></div>
-                        <div class="h-full py-2 px-4 bg-slate-100 cursor-pointer font-medium"><i class="fa-solid fa-filter"></i></div>
+                        <div class="h-full py-2 px-4 bg-slate-100 cursor-pointer font-medium" title="Export event log"><i class="fa-solid fa-download"></i></div>
+                        <div class="h-full py-2 px-4 bg-slate-100 cursor-pointer font-medium" title="Filter"><i class="fa-solid fa-filter"></i></div>
                     </div>
                 </div>
-                <div id="eventLog" class="text-sm overflow-y-auto pt-1.5 h-full"></div>
-                <input type="text" id="chatbox" class=" text-sm bg-slate-400 px-1.5 py-0.5 text-white placeholder:text-slate-200" placeholder="Type here to chat...">
+                <pre id="eventLog" class="text-sm overflow-y-auto break-words whitespace-normal pt-1.5 h-full"></pre>
+                <input type="text" id="chatbox" class=" text-sm bg-slate-400 px-1.5 py-1 text-white placeholder:text-slate-200" placeholder="Type here to chat...">
             </div>
         </div>
 
@@ -159,10 +162,10 @@
                 <input type="text" id="command" ondrop="drop(event)" ondragover="allowDrop(event)" class="bg-transparent font-normal w-full" placeholder="Command...">
             </div>
             <!-- Drag and drop overlay -->
-            <div id="dragDropOverlay" class="absolute bg-rose-100 opacity-75 inset-0 p-16 hidden">
-                <div class="relative border-4 rounded-md opacity-100 border-rose-500 border-dashed h-full flex justify-center items-center">
-                    <i class="fa-solid fa-plus fa-4x opacity-100 text-rose-500 pr-3"></i>
-                    <p class="opacity-100 text-rose-500 font-semibold text-lg pl-3">Drag a host here to autofill...</p>
+            <div id="dragDropOverlay" class="absolute bg-rose-200 opacity-75 inset-0 p-16 hidden">
+                <div class="relative border-4 rounded-md opacity-100 border-rose-800 border-dashed h-full flex justify-center items-center">
+                    <i class="fa-solid fa-plus fa-4x opacity-100 text-rose-800 pr-3"></i>
+                    <p class="opacity-100 text-rose-800 font-semibold text-lg pl-3">Drag a host here to autofill...</p>
                 </div>
             </div>
         </div>
@@ -190,80 +193,97 @@
         return input.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
     }
 
+    // Find a better way to do this
     payloadsTab.addEventListener("click", () => {
-        payloadsTab.classList.add("bg-rose-100");
+        payloadsTab.classList.add("bg-rose-200");
+        payloadsTab.classList.add("text-rose-800");
         payloadsTab.classList.remove("hover:bg-rose-50");
         payloadsTab.classList.add("font-medium");
         payloadsTable.classList.remove("hidden");
-        hostsTab.classList.remove("bg-rose-100");
+        hostsTab.classList.remove("bg-rose-200");
         hostsTab.classList.add("hover:bg-rose-50");
         hostsTab.classList.remove("font-medium");
+        hostsTab.classList.remove("text-rose-800");
         hostsTable.classList.add("hidden");
-        implantsTab.classList.remove("bg-rose-100");
+        implantsTab.classList.remove("bg-rose-200");
         implantsTab.classList.add("hover:bg-rose-50");
         implantsTab.classList.remove("font-medium");
+        implantsTab.classList.remove("text-rose-800");
         implantsTable.classList.add("hidden");
         findingsTable.classList.add("hidden");
-        findingsTab.classList.remove("bg-rose-100");
+        findingsTab.classList.remove("bg-rose-200");
         findingsTab.classList.remove("font-medium");
         findingsTab.classList.add("hover:bg-rose-50");
+        findingsTab.classList.remove("text-rose-800");
     });
 
     hostsTab.addEventListener("click", () => {
-        hostsTab.classList.add("bg-rose-100");
+        hostsTab.classList.add("bg-rose-200");
+        hostsTab.classList.add("text-rose-800");
         hostsTab.classList.remove("hover:bg-rose-50");
         hostsTab.classList.add("font-medium");
         hostsTable.classList.remove("hidden");
-        payloadsTab.classList.remove("bg-rose-100");
+        payloadsTab.classList.remove("bg-rose-200");
         payloadsTab.classList.add("hover:bg-rose-50");
         payloadsTab.classList.remove("font-medium");
+        payloadsTab.classList.remove("text-rose-800");
         payloadsTable.classList.add("hidden");
-        implantsTab.classList.remove("bg-rose-100");
+        implantsTab.classList.remove("bg-rose-200");
         implantsTab.classList.add("hover:bg-rose-50");
         implantsTab.classList.remove("font-medium");
+        implantsTab.classList.remove("text-rose-800");
         implantsTable.classList.add("hidden");
         findingsTable.classList.add("hidden");
-        findingsTab.classList.remove("bg-rose-100");
+        findingsTab.classList.remove("bg-rose-200");
         findingsTab.classList.add("hover:bg-rose-50");
         findingsTab.classList.remove("font-medium");
+        findingsTab.classList.remove("text-rose-800");
     });
 
     implantsTab.addEventListener("click", () => {
-        implantsTab.classList.add("bg-rose-100");
+        implantsTab.classList.add("bg-rose-200");
+        implantsTab.classList.add("text-rose-800");
         implantsTab.classList.remove("hover:bg-rose-50");
         implantsTab.classList.add("font-medium");
         implantsTable.classList.remove("hidden");
-        payloadsTab.classList.remove("bg-rose-100");
+        payloadsTab.classList.remove("bg-rose-200");
         payloadsTab.classList.add("hover:bg-rose-50");
         payloadsTab.classList.remove("font-medium");
+        payloadsTab.classList.remove("text-rose-800");
         payloadsTable.classList.add("hidden");
-        hostsTab.classList.remove("bg-rose-100");
+        hostsTab.classList.remove("bg-rose-200");
         hostsTab.classList.add("hover:bg-rose-50");
         hostsTab.classList.remove("font-medium");
+        hostsTab.classList.remove("text-rose-800");
         hostsTable.classList.add("hidden");
         findingsTable.classList.add("hidden");
-        findingsTab.classList.remove("bg-rose-100");
+        findingsTab.classList.remove("bg-rose-200");
         findingsTab.classList.add("hover:bg-rose-50");
         findingsTab.classList.remove("font-medium");
+        findingsTab.classList.remove("text-rose-800");
     });
 
     findingsTab.addEventListener("click", () => {
-        findingsTab.classList.add("bg-rose-100");
+        findingsTab.classList.add("bg-rose-200");
+        findingsTab.classList.add("text-rose-800");
         findingsTab.classList.remove("hover:bg-rose-50");
         findingsTab.classList.add("font-medium");
         findingsTable.classList.remove("hidden");
-        payloadsTab.classList.remove("bg-rose-100");
+        payloadsTab.classList.remove("bg-rose-200");
         payloadsTab.classList.add("hover:bg-rose-50");
         payloadsTab.classList.remove("font-medium");
+        payloadsTab.classList.remove("text-rose-800");
         payloadsTable.classList.add("hidden");
-        hostsTab.classList.remove("bg-rose-100");
+        hostsTab.classList.remove("bg-rose-200");
         hostsTab.classList.add("hover:bg-rose-50");
         hostsTab.classList.remove("font-medium");
+        hostsTab.classList.remove("text-rose-800");
         hostsTable.classList.add("hidden");
         implantsTable.classList.add("hidden");
-        implantsTab.classList.remove("bg-rose-100");
+        implantsTab.classList.remove("bg-rose-200");
         implantsTab.classList.add("hover:bg-rose-50");
         implantsTab.classList.remove("font-medium");
+        implantsTab.classList.remove("text-rose-800");
     });
 
     ipcRenderer.invoke("getAllEventLogs")
@@ -340,7 +360,7 @@
                 <td class="border px-4 py-2 truncate text-center">${timestamp}</td>
                 <td class="border px-4 py-2 truncate">${implantServer}</td>
                 <td class="border px-4 py-2 truncate">${implantCallback} Seconds</td>
-                <td class="border px-4 py-2 truncate"><i onclick="navigator.clipboard.writeText('${implantLink}')" class="fa-solid fa-copy px-2"></i><i onclick="shell.openExternal('${implantLink}')" class="fa-solid px-2 fa-arrow-up-right-from-square"></i><i onclick="ipcRenderer.invoke('deleteImplantById', '${implantId}')" class="px-2 fa-solid fa-trash-can"></i></td></td>
+                <td class="border px-4 py-2 truncate"><i onclick="navigator.clipboard.writeText('${implantLink}')" class="fa-solid fa-copy px-2" title="Copy implant link to clipboard"></i><i onclick="shell.openExternal('${implantLink}')" class="fa-solid px-2 fa-arrow-up-right-from-square" title="Open implant in browser"></i><i onclick="ipcRenderer.invoke('deleteImplantById', '${implantId}')" class="px-2 fa-solid fa-trash-can" title="Delete implant"></i></td></td>
             </tr>`
             document.getElementById("implants-table-body").innerHTML += tableRow
         }) 
@@ -367,7 +387,7 @@
                 <td class="border px-4 py-2 truncate">${findingValue}</td>
                 <td class="border px-4 py-2 truncate">${findingAuthor}</td>
                 <td class="border px-4 py-2 truncate">${findingHostId}</td>
-                <td class="border px-4 py-2 truncate"><i onclick="navigator.clipboard.writeText('${findingValue}')" class="fa-solid fa-copy px-2"></i><i onclick="ipcRenderer.invoke('deleteFindingById', '${findingId}')" class="px-2 fa-solid fa-trash-can"></i></td></td>
+                <td class="border px-4 py-2 truncate"><i onclick="navigator.clipboard.writeText('${findingValue}')" class="fa-solid fa-copy px-2" title="Copy finding value to clipboard"></i><i onclick="ipcRenderer.invoke('deleteFindingById', '${findingId}')" class="px-2 fa-solid fa-trash-can" title="Delete finding"></i></td></td>
             </tr>`
             document.getElementById("findings-table-body").innerHTML += tableRow
         }) 
@@ -395,6 +415,7 @@
                 <td class="border px-4 py-2 truncate">${payloadType}</td>
                 <td class="border px-4 py-2 truncate">${payloadAuthor}</td> 
                 <td class="border px-4 py-2 truncate">${payloadRisk}</td>
+                <td class="border px-4 py-2 truncate"><i onclick="navigator.clipboard.writeText('${payloadName}')" class="fa-solid fa-copy px-2" title="Copy payload name to clipboard"></i><i class="fa-solid fa-pencil px-2" title="Edit payload"></i><i class="px-2 fa-solid fa-trash-can" title="Delete payload"></i></td>
             </tr>`
             document.getElementById("payloads-table-body").innerHTML += tableRow
         }) 
@@ -420,7 +441,8 @@
                 <td class="border px-4 py-2 truncate">${hostOS}</td>
                 <td class="border px-4 py-2 truncate">${hostBrowser}</td>
                 <td class="border px-4 py-2 truncate">${hostCurrentTab}</td>
-                <td class="border px-4 py-2 truncate">${hostLastSeen}</td>       
+                <td class="border px-4 py-2 truncate">${hostLastSeen}</td>
+                <td class="border px-4 py-2 truncate"><i onclick="navigator.clipboard.writeText('${hostId}')" class="fa-solid fa-copy px-2" title="Copy host ID to clipboard"></i><i class="px-2 fa-solid fa-skull-crossbones" title="Mark as offline"></i><i class="px-2 fa-solid fa-trash-can" title="Delete host"></i></td>     
             </tr>`
             document.getElementById("hosts-table-body").innerHTML += tableRow
         })
@@ -437,8 +459,9 @@
                 ipcRenderer.invoke("processCommand", commandInput.value)
                 commandInput.value = ""
             } else {
+                document.getElementById("commandOutput").innerHTML += `<pre>${commandInput.value}</pre>`;
                 ipcRenderer.invoke("processCommand", commandInput.value)
-                .then((result => {
+                .then((result => {  
                     commandHistory = result.history
                     const type = result.type
                     let output = result.message
