@@ -5,6 +5,7 @@ const { getAllImplants, deleteImplantById } = require("./helpers/implants");
 const { getAllPayloads } = require("./helpers/payloads");
 const { getAllHosts } = require("./helpers/hosts");
 const { getAllFindings, deleteFindingById } = require("./helpers/findings");
+const { getAllUsers } = require("./helpers/users");
 const processCommand = require("./helpers/commands");
 const path = require("path")
 const Store = require("electron-store");
@@ -98,6 +99,12 @@ const createWindow = () => {
         } catch (e) {
             return "Error: " + e;
         }
+    })
+
+    ipcMain.handle("getAllUsers", async (event) => {
+        const jwt = store.get("session");
+        const users = await getAllUsers(jwt);
+        event.sender.send("users", users);
     })
 
     // win.openDevTools(); // Open DevTools

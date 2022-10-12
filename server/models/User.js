@@ -3,6 +3,10 @@ const { Schema } = mongoose;
 const bcrypt = require("bcryptjs");
 
 const userSchema = new Schema({
+    timestamp: {
+        type: Date,
+        default: Date.now
+    },
     username: {
         type: String,
         required: [true, "Username is required"],
@@ -11,6 +15,11 @@ const userSchema = new Schema({
     password: {
         type: String,
         required: [true, "Password is required"],
+    },
+    role: {
+        type: String,
+        enum: ["Admin", "User"],
+        required: [true, "Role is required"],
     },
     commandHistory: {
         type: Array,
