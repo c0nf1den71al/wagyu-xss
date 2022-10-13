@@ -39,6 +39,7 @@
                         <li><button class="px-3 py-2 hover:bg-rose-100 rounded-md"><i class="fa-solid fa-palette pr-2"></i>Appearance</button></li>
                         <li><button class="font-medium px-3 py-2 bg-rose-200 text-rose-800 rounded-md"><i class="fa-solid fa-user pr-2"></i>Users</button></li>
                         <li><button class="px-3 py-2 hover:bg-rose-100 rounded-md"><i class="fa-solid fa-circle-info pr-2"></i>About</button></li>
+                        <li><button class="px-3 py-2 hover:bg-rose-100 rounded-md" onclick="ipcRenderer.send('logout')"><i class="fa-solid fa-right-from-bracket pr-2"></i>Logout</button></li>
                     </ul>
                 </div>
                 <div>
@@ -58,18 +59,18 @@
 
                 </div>
                 <!-- Users Settings -->
-                <div class="flex flex-col">
+                <div id="settings-users" class="flex flex-col">
                     <div class="flex flex-row justify-between items-center px-7 py-4">
                         <h1 class="text-2xl font-bold">Users</h1>
-                        <button class="px-3 py-2 bg-rose-200 text-rose-800 rounded-md"><i class="fa-solid fa-plus pr-2"></i>Add User</button>
+                        <button onclick="document.getElementById('settings-users').classList.add('hidden'); document.getElementById('user-username').value = ''; document.getElementById('user-role').value = 'User'; document.getElementById('settings-create-edit-user-title').innerText = 'Create User'; document.getElementById('settings-create-edit-user').classList.remove('hidden')" class="px-3 py-2 bg-rose-200 text-rose-800 rounded-md"><i class="fa-solid fa-plus pr-2"></i>Add User</button>
                     </div>
                     <div class="flex flex-row px-7 py-4">
                         <table class="w-full">
                             <thead class="bg-slate-100">
                             <tr>
-                                <th class="border font-medium px-4 py-2">Date Created</th>
                                 <th class="border font-medium px-4 py-2">Username</th>
                                 <th class="border font-medium px-4 py-2">Role</th>
+                                <th class="border font-medium px-4 py-2">Date Created</th>
                                 <th class="border font-medium px-4 py-2">Actions</th>
                             </tr>
                             </thead>
@@ -84,6 +85,39 @@
                         </table>
                     </div>
                 </div>
+                
+                <!-- Create/Edit User Settings-->
+                <div id="settings-create-edit-user" class="hidden flex flex-col">
+                    <div class="flex flex-row justify-between items-center px-7 py-4">
+                        <h1 id="settings-create-edit-user-title" class="text-2xl font-bold"></h1>
+                    </div>
+                    <div class="flex flex-row self-center">
+                        <div class="px-7 py-10 flex flex-col">
+                            <label class="font-medium" for="username">Username</label>
+                            <input type="text" placeholder="wagyu" name="username" id="user-username" class="appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5">
+                            <label class="font-medium" for="role">Role</label>
+                            <select id="user-role" class="appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5">
+                                <option value="User">User</option>
+                                <option value="Admin">Admin</option>
+                            </select>
+                            <div class="flex flex-row space-x-5">
+                                <div class="flex flex-col"> 
+                                    <label class="font-medium" for="password">Password</label>
+                                    <input type="password" placeholder="••••••••" name="password" id="user-password" class="appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5">
+                                </div>
+                                <div class="flex flex-col"> 
+                                    <label class="font-medium" for="password">Confirm Password</label>
+                                    <input type="password" placeholder="••••••••" name="password" id="user-password-confirm" class="appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5">
+                                </div>
+                            </div>
+                            <div class="flex flex-row w-full justify-end space-x-3">
+                                <button onclick="document.getElementById('settings-users').classList.remove('hidden'); document.getElementById('settings-create-edit-user').classList.add('hidden')" class="py-2 px-3 bg-gray-200 text-gray-400 rounded-md font-bold">Back</button>
+                                <button onclick="createUser()" class="py-2 px-3 bg-rose-300 text-rose-800 rounded-md font-bold">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- About -->
                 <div class="hidden">
 
@@ -246,6 +280,13 @@
     let commandHistory = []
     let commandHistoryIndex = 0
 
+    ipcRenderer.invoke("checkLogin").then((res) => {
+        console.log(res)
+        if (res === false) {
+            window.location.href = "login.html"
+        }
+    })
+
     // Tabs
     const hostsTab = document.getElementById("hosts-tab");
     const hostsTable = document.getElementById("hosts-table");
@@ -363,18 +404,46 @@
         document.getElementById("users-table-body").innerHTML = "";
         users.forEach(user => {
             const timestamp = new Date(user.timestamp).toLocaleString()
+            const userId = xssSanitize(user._id.toString());
             const userUsername = xssSanitize(user.username);
             const userRole = xssSanitize(user.role);
             const tableRow = `<tr>
-                <td class="border px-4 py-2 truncate">${timestamp}</td>
                 <td class="border px-4 py-2 truncate">${userUsername}</td>
                 <td class="border px-4 py-2 truncate">${userRole}</td>
-                <td class="border px-4 py-2"> <i class="fa-solid fa-pencil px-2 cursor-pointer" title="Modify user"></i><i class="fa-solid fa-trash px-2 cursor-pointer" title="Delete user"></i></td>
+                <td class="border px-4 py-2 truncate">${timestamp}</td>
+                <td class="border px-4 py-2"> <i class="fa-solid fa-pencil px-2 cursor-pointer" title="Modify user" onclick="document.getElementById('settings-users').classList.add('hidden'); document.getElementById('user-username').value = '${userUsername}'; document.getElementById('user-role').value = '${userRole}'; document.getElementById('settings-create-edit-user-title').innerText = 'Edit User'; document.getElementById('settings-create-edit-user').classList.remove('hidden')"></i><i onclick="ipcRenderer.invoke('deleteUserById', '${userId}')" class="fa-solid fa-trash px-2 cursor-pointer" title="Delete user"></i></td>
             </tr>`
             
             document.getElementById("users-table-body").innerHTML += tableRow
         })
     });
+
+    ipcRenderer.on("refreshUsers", () => {
+        ipcRenderer.invoke("getAllUsers")
+    });
+
+    function createUser() {
+        let username = document.getElementById("user-username")
+        let role = document.getElementById("user-role")
+        let password = document.getElementById("user-password")
+        let passwordConfirm = document.getElementById("user-password-confirm")
+        let inputArray = [username, role, password, passwordConfirm]
+        inputArray.forEach(input => {
+            if (input.value === "") {
+                input.classList.add("border-red-500");
+            } else {
+                input.classList.remove("border-red-500");
+            }
+        })
+        if (password.value !== passwordConfirm.value) {
+            password.classList.add("border-red-500");
+            passwordConfirm.classList.add("border-red-500");
+            return;
+        }
+        ipcRenderer.invoke("createUser", username.value, password.value, passwordConfirm.value, role.value);
+        document.getElementById("settings-create-edit-user").classList.add("hidden");
+        document.getElementById("settings-users").classList.remove("hidden");
+    }
 
     ipcRenderer.invoke("getAllEventLogs")
     ipcRenderer.on('eventLogs', (event, eventLogs) => {

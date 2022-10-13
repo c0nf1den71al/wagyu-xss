@@ -1,8 +1,9 @@
 const router = require("express").Router();
-const { createEvent } = require("../controllers/eventControllers");
-const { getAllUsers, deleteUserById } = require("../controllers/userControllers");
+const { getAllUsers, deleteUserById, createUser } = require("../controllers/userControllers");
 const auth = require("../middlewares/authMiddleware");
- 
-router.get("/get", auth, getAllUsers)
+const adminAuth = require("../middlewares/adminAuthMiddleware");
 
+router.get("/get", auth, getAllUsers);
+router.post("/create", adminAuth, createUser);
+router.delete("/delete/:id", adminAuth, deleteUserById)
 module.exports = router;

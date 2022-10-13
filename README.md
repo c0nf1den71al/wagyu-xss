@@ -57,6 +57,7 @@ A dynamic cross-site scripting (XSS) payload delivery system with team server ab
 ### Misc
 - [x] Explain env vairables in README.md
 - [ ] Wiki
+- [ ] Change database initial seed to a script not container. This will enable the default user to be created with a time.
 
 ## Payload Ideas
 

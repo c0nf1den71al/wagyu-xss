@@ -21,7 +21,5 @@ const eventSchema = new Schema({
     }
 });
 
-// What will the event log format be? Colour will indicate the type - [Timestamp][CreatedBy]: Description
-
 const Event = mongoose.model("Event", eventSchema);
 module.exports = Event;

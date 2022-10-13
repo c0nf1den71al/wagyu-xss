@@ -55,6 +55,12 @@
 <script>
     const { ipcRenderer } = require('electron');
 
+    ipcRenderer.invoke("checkLogin").then((res) => {
+        if (res) {
+            window.location.href = "index.html";
+        }
+    });
+
     document.getElementById("login").addEventListener("click", () => {
         const username = document.getElementById("username").value;
         const password = document.getElementById("password").value;
