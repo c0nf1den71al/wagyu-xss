@@ -23,10 +23,9 @@
     <title>Wagyu Client</title>
 </head>
 <body>
-<div class="flex flex-col h-screen w-screen relative">
-    
+<div class="flex flex-col h-screen w-screen relative">   
     <!-- Settings Modal -->
-    <div id="settingsModal" class="hidden absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-80 z-50 flex items-center justify-center">
+    <div id="settingsModal" class="hidden absolute top-0 left-0 w-full h-full bg-black bg-opacity-80 z-50 flex items-center justify-center">
         <div class="w-3/4 h-3/4 bg-white rounded-lg flex flex-row">     
             <!-- Side menu -->       
             <div class="flex flex-col w-1/5 bg-gray-100 rounded-l-lg py-4 px-6 justify-between">
@@ -62,7 +61,7 @@
                 <div id="settings-users" class="flex flex-col">
                     <div class="flex flex-row justify-between items-center px-7 py-4">
                         <h1 class="text-2xl font-bold">Users</h1>
-                        <button id="add-user-button" disabled onclick="document.getElementById('settings-users').classList.add('hidden'); document.getElementById('settings-create-user').classList.remove('hidden');" class="disabled:bg-gray-100 disabled:text-gray-400 px-3 py-2 bg-rose-200 text-rose-800 rounded-md"><i class="fa-solid fa-plus pr-2"></i>Add User</button>
+                        <button id="add-user-button" disabled onclick="document.getElementById('settings-users').classList.add('hidden'); document.getElementById('settings-create-user').classList.remove('hidden');" class="disabled:bg-gray-100 disabled:text-gray-400 px-3 py-2 bg-rose-200 text-rose-800 rounded-md font-medium"><i class="fa-solid fa-plus pr-2"></i>Add User</button>
                     </div>
                     <div class="flex flex-row px-7 py-4">
                         <table class="w-full">
@@ -111,8 +110,8 @@
                                 </div>
                             </div>
                             <div class="flex flex-row w-full justify-end space-x-3">
-                                <button onclick="document.getElementById('settings-users').classList.remove('hidden'); document.getElementById('settings-create-user').classList.add('hidden')" class="py-2 px-3 bg-gray-200 text-gray-400 rounded-md font-bold">Back</button>
-                                <button class="py-2 px-3 bg-rose-300 text-rose-800 rounded-md font-bold" onclick="createUser()">Create</button>
+                                <button onclick="document.getElementById('settings-users').classList.remove('hidden'); document.getElementById('settings-create-user').classList.add('hidden')" class="py-2 px-3 bg-gray-200 text-gray-400 rounded-md font-medium">Back</button>
+                                <button class="py-2 px-3 bg-rose-300 text-rose-800 rounded-md font-medium" onclick="createUser()">Create</button>
                             </div>
                         </div>
                     </div>
@@ -144,8 +143,8 @@
                                 </div>
                             </div>
                             <div class="flex flex-row w-full justify-end space-x-3">
-                                <button onclick="document.getElementById('settings-users').classList.remove('hidden'); document.getElementById('settings-edit-user').classList.add('hidden')" class="py-2 px-3 bg-gray-200 text-gray-400 rounded-md font-bold">Back</button>
-                                <button class="py-2 px-3 bg-rose-300 text-rose-800 rounded-md font-bold" onclick="updateUser()">Update</button>
+                                <button onclick="document.getElementById('settings-users').classList.remove('hidden'); document.getElementById('settings-edit-user').classList.add('hidden')" class="py-2 px-3 bg-gray-200 text-gray-400 rounded-md font-medium">Back</button>
+                                <button class="py-2 px-3 bg-rose-300 text-rose-800 rounded-md font-medium" onclick="updateUser()">Update</button>
                             </div>
                         </div>
                     </div>
@@ -161,7 +160,7 @@
 
 
     <!-- Navbar -->
-    <div class="flex w-full h-15 justify-between p-3.5 shadow-md z-10">
+    <div class="flex w-full justify-between p-3.5 shadow-md z-10" style="height: 10%;">
             <!-- Brand -->
             <div class="flex items-center">
                 <img class="w-10" src="images/steak.png" alt="Tailwind CSS Logo">
@@ -169,12 +168,13 @@
             </div>
 
             <!-- Navbar -->
-            <div class="flex">
-                <button onclick="document.getElementById('settingsModal').classList.remove('hidden'); loadSettings()" class="bg-rose-200 text-rose-800 rounded-md px-3.5 h-full flex items-center font-medium"><i class="fa-solid fa-gear pr-2"></i>Settings</button>
+            <div class="flex pr-5">
+                <button onclick="" class="hover:bg-rose-100 rounded-md px-3.5 h-full flex items-center font-medium"><i class="fa-solid fa-code pr-2"></i>Payload Editor</button>
+                <button onclick="document.getElementById('settingsModal').classList.remove('hidden'); loadSettings()" class="hover:bg-rose-100 rounded-md px-3.5 h-full flex items-center font-medium"><i class="fa-solid fa-gear pr-2"></i>Settings</button>
             </div>
     </div>
     <!-- Main -->
-    <div class="flex flex-col justify-center flex-1 h-full">
+    <div class="flex flex-col justify-center" style="height: 90%;">
         <!-- Top -->
         <div class="h-2/3 grow flex flex-row">
             <!-- Hosts -->
