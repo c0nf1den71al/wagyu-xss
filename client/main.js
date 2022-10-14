@@ -1,10 +1,11 @@
-const { app, BrowserWindow, ipcMain, Menu, MenuItem } = require("electron")
+const { app, BrowserWindow, ipcMain } = require("electron")
 const login = require("./helpers/auth")
 const { getAllEventLogs, createEventLog } = require("./helpers/eventLogs")
 const { getAllImplants, deleteImplantById } = require("./helpers/implants");
 const { getAllPayloads } = require("./helpers/payloads");
 const { getAllHosts } = require("./helpers/hosts");
 const { getAllFindings, deleteFindingById } = require("./helpers/findings");
+const { getAllUsers, deleteUserById, createUser, updateUserById } = require("./helpers/users");
 const processCommand = require("./helpers/commands");
 const path = require("path")
 const Store = require("electron-store");
@@ -22,20 +23,51 @@ const createWindow = () => {
 
     const store = new Store();
 
+    if (store.get("server") && store.get("username")) {
+        global.server = store.get("server");
+        global.username = store.get("username");
+    }
+    
     ipcMain.on("login", (event, username, password, server) => {
+        store.set("server", server);
         global.server = server;
-        global.username = username;
+        
         (async function (username, password) {
-            const jwt = await login(username, password);
-            if (await jwt) {
-                store.set("session", await jwt);
-                await createEventLog(jwt, "Team Server", `Operator ${username} joined the team server`, "info");
+            const data = await login(username, password);
+            if (await data.jwt && await data.role && await data.username) {
+                store.set("session", await data.jwt);
+                store.set("role", await data.role);
+                store.set("username", await data.username);
+                global.username = username;
+                await createEventLog(data.jwt, "Team Server", `Operator ${data.username} joined the team server`, "info");
                 await win.loadFile("index.html");
             } // else {
             // handle error here
             // }
         })(username, password, server);
     });
+
+    ipcMain.handle("checkLogin", async (event) => {
+        const jwt = store.get("session");
+        // Check jwt is valid
+        if (await jwt !== undefined) {
+            return {username: store.get("username"), role: store.get("role")};
+        } else {
+            return false
+        }
+    })
+
+    ipcMain.handle("getStore", async (event) => {
+        return { server: store.get("server"), username: store.get("username") }
+    })
+    
+    ipcMain.on("logout", async (event) => {
+        // This prevents the session being cleared for some reason
+        // const jwt = store.get("session");
+        // await createEventLog(jwt, "Team Server", `Operator ${global.username} left the team server`, "info");
+        store.delete("session");
+        win.loadFile("login.html");
+    })
 
     ipcMain.handle("getAllImplants", async (event) => {
         const jwt = store.get("session");
@@ -97,6 +129,40 @@ const createWindow = () => {
             return await result;
         } catch (e) {
             return "Error: " + e;
+        }
+    })
+
+    ipcMain.handle("getAllUsers", async (event) => {
+        const jwt = store.get("session");
+        const users = await getAllUsers(jwt);
+        event.sender.send("users", users);
+    })
+
+    ipcMain.handle("deleteUserById", async (event, id) => {
+        const jwt = store.get("session");
+        await deleteUserById(jwt, id);
+        event.sender.send("refreshUsers");
+    })
+
+    ipcMain.handle("createUser", async (event, username, password, confirmpassword, role) => {
+        const jwt = store.get("session");
+        if(password === confirmpassword) {
+            await createUser(jwt, username, password, role);
+            event.sender.send("refreshUsers");
+        } else {
+            // Handle errors here
+            // event.sender.send("passwordsDontMatch");
+        }
+    })
+
+    ipcMain.handle("updateUser", async (event, id, username, password, confirmpassword, role) => {
+        const jwt = store.get("session");
+        if(password === confirmpassword) {
+            await updateUserById(jwt, id, username, password, role);
+            event.sender.send("refreshUsers");
+        } else {
+            // Handle errors here
+            // event.sender.send("passwordsDontMatch");
         }
     })
 

@@ -23,9 +23,145 @@
     <title>Wagyu Client</title>
 </head>
 <body>
-<div class="flex flex-col h-screen w-screen">
+<div class="flex flex-col h-screen w-screen relative">
+    
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="hidden absolute top-0 left-0 w-screen h-screen bg-black bg-opacity-80 z-50 flex items-center justify-center">
+        <div class="w-3/4 h-3/4 bg-white rounded-lg flex flex-row">     
+            <!-- Side menu -->       
+            <div class="flex flex-col w-1/5 bg-gray-100 rounded-l-lg py-4 px-6 justify-between">
+                <div>
+                    <h1 class="text-2xl font-bold">Settings</h1>
+                </div>
+                <div class="h-full pt-10">
+                    <ul class="space-y-2">
+                        <li><button class="px-3 py-2 hover:bg-rose-100 rounded-md" title="Not current available"><i class="fa-solid fa-gear pr-2"></i>General</button></li>
+                        <li><button class="px-3 py-2 hover:bg-rose-100 rounded-md" title="Not current available"><i class="fa-solid fa-palette pr-2"></i>Appearance</button></li>
+                        <li><button class="font-medium px-3 py-2 bg-rose-200 text-rose-800 rounded-md"><i class="fa-solid fa-user pr-2"></i>Users</button></li>
+                        <li><button class="px-3 py-2 hover:bg-rose-100 rounded-md" title="Not current available"><i class="fa-solid fa-circle-info pr-2"></i>About</button></li>
+                        <li><button class="px-3 py-2 hover:bg-rose-100 rounded-md" onclick="ipcRenderer.send('logout')"><i class="fa-solid fa-door-open pr-2"></i>Logout</button></li>
+                    </ul>
+                </div>
+                <div>
+                    <p class="text-gray-300 text-sm">Wagyu XSS Client v1.0.0</p>
+                </div>
+            </div>
+
+            <!-- Settings Content -->
+            <div class="flex flex-col w-4/5 h-full">
+                <i class="fa-solid fa-xl fa-xmark cursor-pointer place-self-end p-7" onclick="document.getElementById('settingsModal').classList.add('hidden')"></i>
+                <!-- General Settings -->
+                <div class="hidden">
+
+                </div>
+                <!-- Appearance Settings -->
+                <div class="hidden">
+
+                </div>
+                <!-- Users Settings -->
+                <div id="settings-users" class="flex flex-col">
+                    <div class="flex flex-row justify-between items-center px-7 py-4">
+                        <h1 class="text-2xl font-bold">Users</h1>
+                        <button id="add-user-button" disabled onclick="document.getElementById('settings-users').classList.add('hidden'); document.getElementById('settings-create-user').classList.remove('hidden');" class="disabled:bg-gray-100 disabled:text-gray-400 px-3 py-2 bg-rose-200 text-rose-800 rounded-md"><i class="fa-solid fa-plus pr-2"></i>Add User</button>
+                    </div>
+                    <div class="flex flex-row px-7 py-4">
+                        <table class="w-full">
+                            <thead class="bg-slate-100">
+                            <tr>
+                                <th class="border font-medium px-4 py-2">Username</th>
+                                <th class="border font-medium px-4 py-2">Role</th>
+                                <th class="border font-medium px-4 py-2">Date Created</th>
+                                <th class="border font-medium px-4 py-2">Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody class="text-center" id="users-table-body">
+                            
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td class="px-4 py-2 text-slate-300 text-center" colspan="6">Create more users for them to show here...</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Create User Settings-->
+                <div id="settings-create-user" class="hidden flex flex-col">
+                    <div class="flex flex-row justify-between items-center px-7 py-4">
+                        <h1 class="text-2xl font-bold">Create User</h1>
+                    </div>
+                    <div class="flex flex-row self-center">
+                        <div class="px-7 py-10 flex flex-col">
+                            <label class="font-medium" for="create-user-username">Username</label>
+                            <input type="text" placeholder="wagyu" name="username" id="create-user-username" class="appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5">
+                            <label class="font-medium" for="create-user-role">Role</label>
+                            <select id="create-user-role" class="appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5">
+                                <option value="User">User</option>
+                                <option value="Admin">Admin</option>
+                            </select>
+                            <div class="flex flex-row space-x-5">
+                                <div class="flex flex-col"> 
+                                    <label class="font-medium" for="create-user-password">Password</label>
+                                    <input type="password" placeholder="••••••••" name="password" id="create-user-password" class="appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5">
+                                </div>
+                                <div class="flex flex-col"> 
+                                    <label class="font-medium" for="create-user-password-confirm">Confirm Password</label>
+                                    <input type="password" placeholder="••••••••" name="password" id="create-user-password-confirm" class="appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5">
+                                </div>
+                            </div>
+                            <div class="flex flex-row w-full justify-end space-x-3">
+                                <button onclick="document.getElementById('settings-users').classList.remove('hidden'); document.getElementById('settings-create-user').classList.add('hidden')" class="py-2 px-3 bg-gray-200 text-gray-400 rounded-md font-bold">Back</button>
+                                <button class="py-2 px-3 bg-rose-300 text-rose-800 rounded-md font-bold" onclick="createUser()">Create</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Edit User Settings-->
+                <div id="settings-edit-user" class="hidden flex flex-col">
+                    <div class="flex flex-row justify-between items-center px-7 py-4">
+                        <h1 class="text-2xl font-bold">Edit User</h1>
+                    </div>
+                    <div class="flex flex-row self-center">
+                        <div class="px-7 py-10 flex flex-col">
+                            <input type="hidden" id="edit-user-id">
+                            <label class="font-medium" for="edit-user-username">Username</label>
+                            <input type="text" placeholder="wagyu" name="username" id="edit-user-username" class="appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5">
+                            <label class="font-medium" for="edit-user-role">Role</label>
+                            <select id="edit-user-role" class="appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5">
+                                <option value="User">User</option>
+                                <option value="Admin">Admin</option>
+                            </select>
+                            <div class="flex flex-row space-x-5">
+                                <div class="flex flex-col"> 
+                                    <label class="font-medium" for="edit-user-password">Password</label>
+                                    <input type="password" placeholder="••••••••" name="password" id="edit-user-password" class="appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5">
+                                </div>
+                                <div class="flex flex-col"> 
+                                    <label class="font-medium" for="edit-user-password-confirm">Confirm Password</label>
+                                    <input type="password" placeholder="••••••••" name="password" id="edit-user-password-confirm" class="appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5">
+                                </div>
+                            </div>
+                            <div class="flex flex-row w-full justify-end space-x-3">
+                                <button onclick="document.getElementById('settings-users').classList.remove('hidden'); document.getElementById('settings-edit-user').classList.add('hidden')" class="py-2 px-3 bg-gray-200 text-gray-400 rounded-md font-bold">Back</button>
+                                <button class="py-2 px-3 bg-rose-300 text-rose-800 rounded-md font-bold" onclick="updateUser()">Update</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- About -->
+                <div class="hidden">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <!-- Navbar -->
-    <div class="flex w-full h-15 justify-between p-3.5 shadow-md z-50">
+    <div class="flex w-full h-15 justify-between p-3.5 shadow-md z-10">
             <!-- Brand -->
             <div class="flex items-center">
                 <img class="w-10" src="images/steak.png" alt="Tailwind CSS Logo">
@@ -34,8 +170,7 @@
 
             <!-- Navbar -->
             <div class="flex">
-                <button class="bg-rose-200 text-rose-800 rounded-md px-3.5 h-full flex items-center font-medium"><i class="fa-solid fa-gear pr-2"></i>Settings</button>
-                
+                <button onclick="document.getElementById('settingsModal').classList.remove('hidden'); loadSettings()" class="bg-rose-200 text-rose-800 rounded-md px-3.5 h-full flex items-center font-medium"><i class="fa-solid fa-gear pr-2"></i>Settings</button>
             </div>
     </div>
     <!-- Main -->
@@ -155,7 +290,7 @@
 
         <!-- Command Line -->
         <div class="h-1/3 bg-slate-100 p-5 relative z-0 overflow-auto" onclick="document.getElementById('command').focus()" ondrop="drop(event)" ondragover="allowDrop(event)">
-            <div id="commandOutput" class="text-sm z-50"></div> <!-- Insert command output here -->
+            <div id="commandOutput" class="text-sm"></div> <!-- Insert command output here -->
             <!-- Input -->
             <div class="flex text-sm">
                 <p id="cli-identity" class="text-rose-400 font-semibold whitespace-nowrap pr-2.5">wagyu@wagyu #</p>
@@ -177,6 +312,23 @@
 
     let commandHistory = []
     let commandHistoryIndex = 0
+
+    let globalUsername = "wagyu"
+    let globalRole = "User" // Only affects the UI
+
+    ipcRenderer.invoke("checkLogin").then((res) => {
+        if (res === false) {
+            window.location.href = "login.html"
+        } else {
+            globalUsername = res.username
+            document.getElementById("cli-identity").innerText = `${xssSanitize(globalUsername)}@wagyu #`;
+            
+            globalRole = res.role // Only affects the UI
+            if (globalRole === "Admin") {
+                document.getElementById("add-user-button").disabled = false;
+            }
+        }
+    })
 
     // Tabs
     const hostsTab = document.getElementById("hosts-tab");
@@ -286,6 +438,91 @@
         implantsTab.classList.remove("text-rose-800");
     });
 
+    function loadSettings() {
+        ipcRenderer.invoke("getAllUsers"); 
+    }
+
+    ipcRenderer.on("users", (event, users) => {
+        // Clear current findings from DOM
+        document.getElementById("users-table-body").innerHTML = "";
+        users.forEach(user => {
+            const timestamp = new Date(user.timestamp).toLocaleString()
+            const userId = xssSanitize(user._id.toString());
+            const userUsername = xssSanitize(user.username);
+            const userRole = xssSanitize(user.role);
+            const tableRow = `<tr>
+                <td class="border px-4 py-2 truncate">${userUsername}</td>
+                <td class="border px-4 py-2 truncate">${userRole}</td>
+                <td class="border px-4 py-2 truncate">${timestamp}</td>
+                ${globalRole === "Admin" ? `
+                    <td class="border px-4 py-2"><i class="fa-solid fa-pencil px-2 cursor-pointer" title="Modify user" onclick="document.getElementById('settings-users').classList.add('hidden'); document.getElementById('edit-user-id').value = '${userId}'; document.getElementById('edit-user-username').value = '${userUsername}'; document.getElementById('edit-user-role').value = '${userRole}'; document.getElementById('settings-edit-user').classList.remove('hidden');"></i><i onclick="ipcRenderer.invoke('deleteUserById', '${userId}')" class="fa-solid fa-trash px-2 cursor-pointer" title="Delete user"></i></td>
+                `:`  
+                    <td class="border px-4 py-2"><i class="fa-solid fa-pencil px-2 text-gray-300" title="Admin privileges required"></i><i class="fa-solid fa-trash px-2 text-gray-300" title="Admin privileges required"></i></td>
+                `}
+                
+            </tr>`
+            
+            document.getElementById("users-table-body").innerHTML += tableRow
+        })
+    });
+
+    ipcRenderer.on("refreshUsers", () => {
+        ipcRenderer.invoke("getAllUsers")
+    });
+
+
+    function createUser() {
+        let username = document.getElementById("create-user-username")
+        let role = document.getElementById("create-user-role")
+        let password = document.getElementById("create-user-password")
+        let passwordConfirm = document.getElementById("create-user-password-confirm")
+        
+        let inputArray = [username, role, password, passwordConfirm]
+        inputArray.forEach(input => {
+            if (input.value === "") {
+                input.classList.add("border-red-500");
+            } else {
+                input.classList.remove("border-red-500");
+            }
+        })
+
+        if (password.value !== passwordConfirm.value) {
+            password.classList.add("border-red-500");
+            passwordConfirm.classList.add("border-red-500");
+            return;
+        }
+
+        if(username.value !== "" && role.value !== "" && password.value !== "" && passwordConfirm.value !== "") {
+            ipcRenderer.invoke("createUser", username.value, password.value, passwordConfirm.value, role.value);
+            username.value = "";
+            role.value = "";
+            password.value = "";
+            passwordConfirm.value = "";
+            document.getElementById("settings-create-user").classList.add("hidden");
+            document.getElementById("settings-users").classList.remove("hidden");
+        }
+    }
+
+    function updateUser() {
+        let id = document.getElementById("edit-user-id")
+        let username = document.getElementById("edit-user-username")
+        let role = document.getElementById("edit-user-role")
+        let password = document.getElementById("edit-user-password")
+        let passwordConfirm = document.getElementById("edit-user-password-confirm")
+
+        if (password.value !== passwordConfirm.value) {
+            password.classList.add("border-red-500");
+            passwordConfirm.classList.add("border-red-500");
+            return;
+        }
+
+        ipcRenderer.invoke("updateUser", id.value, username.value, password.value, passwordConfirm.value, role.value);
+        password.value = "";
+        passwordConfirm.value = "";
+        document.getElementById("settings-edit-user").classList.add("hidden");
+        document.getElementById("settings-users").classList.remove("hidden");
+    }
+
     ipcRenderer.invoke("getAllEventLogs")
     ipcRenderer.on('eventLogs', (event, eventLogs) => {
         // Clear current event logs from DOM
@@ -355,7 +592,7 @@
             const implantServer = xssSanitize(implant.server)
             const implantLink = xssSanitize(`${serverDomain}/implants/${implantId}.js`)
             const implantCallback = implant.callbackInterval / 1000
-            const tableRow = `<tr class="hover:bg-slate-100 cursor-pointer">
+            const tableRow = `<tr">
                 <td class="border px-4 py-2 truncate">${implantId}</td>
                 <td class="border px-4 py-2 truncate text-center">${timestamp}</td>
                 <td class="border px-4 py-2 truncate">${implantServer}</td>
@@ -381,7 +618,7 @@
             const findingValue = xssSanitize(finding.value)
             const findingHostId = xssSanitize(finding.hostId)
             const findingAuthor = xssSanitize(finding.createdBy)
-            const tableRow = `<tr class="hover:bg-slate-100 cursor-pointer">
+            const tableRow = `<tr>
                 <td class="border px-4 py-2 truncate">${timestamp}</td>
                 <td class="border px-4 py-2 truncate">${findingName}</td>
                 <td class="border px-4 py-2 truncate">${findingValue}</td>
@@ -459,7 +696,7 @@
                 ipcRenderer.invoke("processCommand", commandInput.value)
                 commandInput.value = ""
             } else {
-                document.getElementById("commandOutput").innerHTML += `<pre>${commandInput.value}</pre>`;
+                document.getElementById("commandOutput").innerHTML += `<pre>${xssSanitize(commandInput.value)}</pre>`;
                 ipcRenderer.invoke("processCommand", commandInput.value)
                 .then((result => {  
                     commandHistory = result.history
@@ -498,8 +735,6 @@
             commandHistoryIndex = 0;
         }
     });
-
-
 
     function allowDrop(event) {
         event.preventDefault();
