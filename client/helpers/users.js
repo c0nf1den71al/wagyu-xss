@@ -45,7 +45,18 @@ async function createUser(jwt, username, password, role) {
 }
 
 async function updateUserById(jwt, id, username, password, role) {
-    console.log(id)
+    const response = await fetch(`${global.server}/api/v1/users/update/${id}`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${jwt}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            username: username,
+            password: password,
+            role: role
+        })
+    })
 }
 
-module.exports = { getAllUsers, deleteUserById, createUser };
+module.exports = { getAllUsers, deleteUserById, createUser, updateUserById };

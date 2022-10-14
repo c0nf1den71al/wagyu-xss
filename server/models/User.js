@@ -33,6 +33,12 @@ userSchema.pre("save", async function (next) {
     next();
 });
 
+userSchema.pre("update", async function (next) {
+    const salt = await bcrypt.genSalt();
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
+});
+
 userSchema.statics.login = async function (username, password) {
     const user = await this.findOne({ username });
     if (user) {

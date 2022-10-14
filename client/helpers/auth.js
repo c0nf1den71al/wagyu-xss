@@ -9,7 +9,7 @@ async function login (username, password) {
         body: JSON.stringify({"username": username, "password": password})
     })
     const data = await response.json();
-    if (await data.jwt) return data.jwt;
+    if (await data.jwt) return data;
     else return false;
 }
 

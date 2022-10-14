@@ -34,8 +34,8 @@ A dynamic cross-site scripting (XSS) payload delivery system with team server ab
 - [x] Command history
 - [x] Change callback to s not ms
 - [x] Host changes to offline when not called back for 5 mins
+- [x] Modal windows for user management
 - [ ] 'Login failed' UI response
-- [ ] Modal windows for admin user management
 - [ ] Drag to resize?
 - [ ] Risk help info button
 - [ ] Implant jitter?
@@ -46,10 +46,11 @@ A dynamic cross-site scripting (XSS) payload delivery system with team server ab
 - [x] Implant callback interval
 - [x] Validate teamserver address when generating implants (remove trailing /, add protocol etc).
 - [x] Send loot to findings tab
-- [ ] Validate user session
-- [ ] Account logout
-- [ ] Change Password
-- [ ] Account privileges (admin user can add, modify users - that's all)
+- [x] Validate user session
+- [x] Account logout
+- [x] Change Password (admin only)
+- [x] Account privileges (admin user can add, modify users - that's all)
+- [x] Create/Edit users
 - [ ] More opperations need to be added to Event log
 - [ ] Export event log option
 - [ ] Obfuscate/Minify payloads

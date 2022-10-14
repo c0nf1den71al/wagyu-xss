@@ -61,6 +61,20 @@
         }
     });
 
+    ipcRenderer.invoke("getStore").then((res) => {
+        if (res) {
+            console.log(res);
+            const server = res.server;
+            const protocol = server.split("://")[0];
+            const host = server.split("://")[1];
+            const username = res.username;
+
+            document.getElementById("protocol").value = protocol + "://";
+            document.getElementById("host").value = host;
+            document.getElementById("username").value = username;
+        }
+    })
+
     document.getElementById("login").addEventListener("click", () => {
         const username = document.getElementById("username").value;
         const password = document.getElementById("password").value;
