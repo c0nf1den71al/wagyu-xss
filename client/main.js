@@ -166,15 +166,15 @@ const createWindow = () => {
         }
     })
 
-    ipcMain.handle("createPayload", async (event, name, description, compatibility, type, risk, payload) => {
+    ipcMain.handle("createPayload", async (event, name, description, compatibility, type, risk, payload, notes) => {
         const jwt = store.get("session");
-        await createPayload(jwt, name, description, compatibility, type, risk, payload);
+        await createPayload(jwt, name, description, compatibility, type, risk, payload, notes);
         event.sender.send("refreshPayloads");
     });
 
-    ipcMain.handle("updatePayload", async (event, id, name, description, compatibility, type, risk, payload) => {
+    ipcMain.handle("updatePayload", async (event, id, name, description, compatibility, type, risk, payload, notes) => {
         const jwt = store.get("session");
-        await updatePayloadById(jwt, id, name, description, compatibility, type, risk, payload);
+        await updatePayloadById(jwt, id, name, description, compatibility, type, risk, payload, notes);
         event.sender.send("refreshPayloads");
     });
 

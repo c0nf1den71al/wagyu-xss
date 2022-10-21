@@ -12,7 +12,7 @@ async function getAllPayloads(jwt) {
     else return false;
 }
 
-async function createPayload(jwt, name, description, compatibility, type, risk, payload) {
+async function createPayload(jwt, name, description, compatibility, type, risk, payload, notes) {
     const response = await fetch(`${global.server}/api/v1/payloads/create`, {
         method: 'POST',
         headers: {
@@ -26,7 +26,8 @@ async function createPayload(jwt, name, description, compatibility, type, risk, 
             compatibility: compatibility,
             type: type,
             author: global.username,
-            risk: Number(risk)
+            risk: Number(risk),
+            notes: notes
         })
     })
 
@@ -35,7 +36,7 @@ async function createPayload(jwt, name, description, compatibility, type, risk, 
     else return false;
 }
 
-async function updatePayloadById(jwt, id, name, description, compatibility, type, risk, payload) {
+async function updatePayloadById(jwt, id, name, description, compatibility, type, risk, payload, notes) {
     const response = await fetch(`${global.server}/api/v1/payloads/update/${id}`, {
         method: 'POST',
         headers: {
@@ -48,7 +49,8 @@ async function updatePayloadById(jwt, id, name, description, compatibility, type
             payload: payload,
             compatibility: compatibility,
             type: type,
-            risk: risk
+            risk: risk,
+            notes: notes
         })
     })
 
