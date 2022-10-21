@@ -15,7 +15,4 @@ Wagyu is a dynamic cross-site scripting (XSS) payload delivery system with team 
 * Exportable team event log
 * Live team chat
 
-<figure><img src=".gitbook/assets/image.png" alt=""><figcaption><p>Wagyu payloads table</p></figcaption></figure>
-
-
-
+<figure><img src=".gitbook/assets/dashboard.png" alt=""><figcaption></figcaption></figure>

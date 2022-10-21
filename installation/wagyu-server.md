@@ -1,5 +1,5 @@
 ---
-description: How to setup and install the Wagyu team server
+description: How to setup and install the Wagyu team server.
 ---
 
 # Wagyu Server

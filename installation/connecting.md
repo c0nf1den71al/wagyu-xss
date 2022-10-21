@@ -1,5 +1,7 @@
 ---
-description: How to connect and login to the team server using the Wagyu client application
+description: >-
+  How to connect and login to the team server using the Wagyu client
+  application.
 ---
 
 # Connecting
