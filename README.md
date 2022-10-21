@@ -5,11 +5,10 @@ A dynamic cross-site scripting (XSS) payload delivery system with team server ab
 - Collaborative Team Server
 
 ![Client Login Page](./images/client-login.png) ![Client Payloads Table](./images/client-payloads.png)
-
 ---
 ## Installation
-Please check out the [Wiki](https://wagyu-docs.jamiepegg.com/) for installation instructions. 
----
+Please check out the [Wiki](https://wagyu-docs.jamiepegg.com/) for installation instructions.
+
 ## To-do List
 ### Client
 - [x] Fetch hosts from DB
