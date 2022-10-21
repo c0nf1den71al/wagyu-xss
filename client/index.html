@@ -898,7 +898,7 @@
                 ipcRenderer.invoke("processCommand", commandInput.value)
                 commandInput.value = ""
             } else {
-                document.getElementById("commandOutput").innerHTML += `<p class="font-mono">${xssSanitize(commandInput.value)}</p>`;
+                document.getElementById("commandOutput").innerHTML += `<pre class="font-mono text-gray-400">${xssSanitize(commandInput.value)}</pre>`;
                 ipcRenderer.invoke("processCommand", commandInput.value)
                 .then((result => {  
                     commandHistory = result.history
@@ -907,11 +907,11 @@
                     output = xssSanitize(output)
 
                     if (type === "error") {
-                        document.getElementById("commandOutput").innerHTML += `<p class="text-red-600 font-mono">${output}</p>`;
+                        document.getElementById("commandOutput").innerHTML += `<pre class="text-red-600 font-mono">${output}</pre>`;
                     } else if (type === "success") {
-                        document.getElementById("commandOutput").innerHTML += `<p class="text-green-500 font-mono">${output}</p>`;
+                        document.getElementById("commandOutput").innerHTML += `<pre class="text-green-500 font-mono">${output}</pre>`;
                     }else {
-                        document.getElementById("commandOutput").innerHTML += `<p class="font-mono">${output}</p>`;
+                        document.getElementById("commandOutput").innerHTML += `<pre class="font-mono">${output}</pre>`;
                     }
 
                     commandInput.value = "";
