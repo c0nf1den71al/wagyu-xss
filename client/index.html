@@ -24,6 +24,119 @@
 </head>
 <body>
 <div class="flex flex-col h-screen w-screen relative">   
+
+    <!-- Payload Editor -->
+    <div id="payloadEditorModal" class="hidden absolute top-0 left-0 w-full h-full bg-black bg-opacity-80 z-50 flex items-center justify-center">
+        <div class="w-3/4 h-3/4 bg-white rounded-lg flex flex-row">     
+            <!-- Side menu -->       
+            <div class="flex flex-col w-1/5 bg-gray-100 rounded-l-lg py-4 px-6 justify-between">
+                <div>
+                    <h1 class="text-2xl font-bold">Payloads</h1>
+                </div>
+                <div class="h-full pt-10">
+                    <ul class="space-y-2" id="payload-editor-list"></ul>
+                </div>
+                <div>
+                    <button id="create-payload-button" onclick="document.getElementById('blank-editor').classList.add('hidden'); document.getElementById('payload-editor-update').classList.add('hidden'); document.getElementById('payload-editor-create').classList.remove('hidden');" class="disabled:bg-gray-200 disabled:text-gray-400 px-3 py-2 bg-rose-200 text-rose-800 rounded-md font-medium"><i class="fa-solid fa-plus pr-2"></i>Create Payload</button>
+                </div>
+            </div>
+
+            <!-- Editor Content -->
+            <div class="flex flex-col w-4/5 h-full items-center">
+                <i class="fa-solid fa-xl fa-xmark cursor-pointer place-self-end p-7" onclick="document.getElementById('payloadEditorModal').classList.add('hidden')"></i>
+        
+                <!-- Editor -->
+                <div id="blank-editor" class="flex flex-col h-full justify-center">
+                        <p class="text-gray-400" style="margin-top: -1.75rem;">Select a payload to edit</p>
+                </div>
+                
+                <!-- Create Payload -->
+                <div id="payload-editor-create" class="hidden flex flex-col overflow-y-scroll">
+                    <div class="flex flex-row justify-between items-center px-7 py-4">
+                        <h1 class="text-2xl font-bold">Create Payload</h1>
+                    </div>
+                    <div class="flex flex-row self-center">
+                        <div class="px-7 py-4 flex flex-col">
+                            <label class="font-medium" for="">Name</label>
+                            <input type="text" placeholder="Name" id="create-payload-name" class="appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5">
+                            <label class="font-medium" for="">Description</label>
+                            <input type="text" placeholder="Description"id="create-payload-description" class="appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5">
+                            <div class="flex flex-row space-x-5">
+                                <div class="w-1/3">
+                                    <label class="font-medium" for="">Browser compatibility</label>
+                                    <input type="text" placeholder="Browser compatibility" id="create-payload-compatibility" class="appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5">
+                                </div>
+                                <div class="w-1/3">
+                                    <label class="font-medium" for="">Type</label>
+                                    <select id="create-payload-type" class="appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5">
+                                        <option value="Recon">Recon</option>
+                                        <option value="Exploit">Exploit</option>
+                                        <option value="Lateral Movement">Lateral Movement</option>
+                                        <option value="Data Exfiltration">Data Exfiltration</option>
+                                        <option value="Misc.">Misc.</option>
+                                    </select>
+                                </div>
+                                <div class="w-1/3">
+                                    <label class="font-medium" for="">Risk (1-5) <i class="pl-1 fa-regular fa-circle-question fa-xs text-blue-600 cursor-pointer" title="How likely the victim is to notice this attack"></i></label>
+                                    <input type="number" placeholder="1" min="1" max="5" id="create-payload-risk" class="appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5">
+                                </div>
+                            </div>
+                            <label class="font-medium" for="payload">Payload</label>
+                            <textarea id="create-payload-payload" onkeydown="if(event.keyCode===9||event.key==='Tab'){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+'\t'+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}" placeholder="Payload..." cols="100" rows="12" class="appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5 font-mono"></textarea>
+                            <div class="flex flex-row w-full justify-end space-x-3">
+                                <button onclick="document.getElementById('blank-editor').classList.remove('hidden'); document.getElementById('payload-editor-create').classList.add('hidden');" class="py-2 px-3 bg-gray-200 text-gray-400 rounded-md font-medium">Back</button>
+                                <button class="py-2 px-3 bg-rose-300 text-rose-800 rounded-md font-medium" onclick="createPayload()">Create</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Update Payload -->
+                <div id="payload-editor-update" class="hidden flex flex-col overflow-y-scroll">
+                    <div class="flex flex-row justify-between items-center px-7 py-4">
+                        <h1 class="text-2xl font-bold">Update Payload</h1>
+                        <button onclick="document.getElementById('payload-editor-update').classList.add('hidden'); document.getElementById('blank-editor').classList.remove('hidden'); deletePayload()" class="px-3 py-2 bg-rose-200 text-rose-800 rounded-md font-medium"><i class="fa-solid fa-trash-can pr-2"></i>Delete Payload</button>
+                    </div>
+                    <div class="flex flex-row self-center">
+                        <div class="px-7 py-4 flex flex-col">
+                            <input type="hidden" id="update-payload-id">
+                            <label class="font-medium" for="update-payload-name">Name</label>
+                            <input type="text" placeholder="Name" id="update-payload-name" class="appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5">
+                            <label class="font-medium" for="update-payload-description">Description</label>
+                            <input type="text" placeholder="Description"id="update-payload-description" class="appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5">
+                            <div class="flex flex-row space-x-5">
+                                <div class="w-1/3">
+                                    <label class="font-medium" for="update-payload-compatibility">Browser compatibility</label>
+                                    <input type="text" placeholder="Browser compatibility" id="update-payload-compatibility" class="appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5">
+                                </div>
+                                <div class="w-1/3">
+                                    <label class="font-medium" for="update-payload-type">Type</label>
+                                    <select id="update-payload-type" class="appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5">
+                                        <option value="Recon">Recon</option>
+                                        <option value="Exploit">Exploit</option>
+                                        <option value="Lateral Movement">Lateral Movement</option>
+                                        <option value="Data Exfiltration">Data Exfiltration</option>
+                                        <option value="Misc.">Misc.</option>
+                                    </select>
+                                </div>
+                                <div class="w-1/3">
+                                    <label class="font-medium" for="update-payload-risk">Risk (1-5) <i class="pl-1 fa-regular fa-circle-question fa-xs text-blue-600 cursor-pointer" title="How likely the victim is to notice this attack"></i></label>
+                                    <input type="number" placeholder="1" min="1" max="5" id="update-payload-risk" class="appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5">
+                                </div>
+                            </div>
+                            <label class="font-medium" for="update-payload-payload">Payload</label>
+                            <textarea id="update-payload-payload" onkeydown="if(event.keyCode===9||event.key==='Tab'){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+'\t'+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}" placeholder="Payload..." cols="100" rows="12" class="appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5 font-mono"></textarea>
+                            <div class="flex flex-row w-full justify-end space-x-3">
+                                <button onclick="document.getElementById('blank-editor').classList.remove('hidden'); document.getElementById('payload-editor-update').classList.add('hidden');" class="py-2 px-3 bg-gray-200 text-gray-400 rounded-md font-medium">Back</button>
+                                <button class="py-2 px-3 bg-rose-300 text-rose-800 rounded-md font-medium" onclick="updatePayload()">Update</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <!-- Settings Modal -->
     <div id="settingsModal" class="hidden absolute top-0 left-0 w-full h-full bg-black bg-opacity-80 z-50 flex items-center justify-center">
         <div class="w-3/4 h-3/4 bg-white rounded-lg flex flex-row">     
@@ -169,7 +282,7 @@
 
             <!-- Navbar -->
             <div class="flex pr-5">
-                <button onclick="" class="hover:bg-rose-100 rounded-md px-3.5 h-full flex items-center font-medium"><i class="fa-solid fa-code pr-2"></i>Payload Editor</button>
+                <button onclick="document.getElementById('payloadEditorModal').classList.remove('hidden')" class="hover:bg-rose-100 rounded-md px-3.5 h-full flex items-center font-medium"><i class="fa-solid fa-code pr-2"></i>Payload Editor</button>
                 <button onclick="document.getElementById('settingsModal').classList.remove('hidden'); loadSettings()" class="hover:bg-rose-100 rounded-md px-3.5 h-full flex items-center font-medium"><i class="fa-solid fa-gear pr-2"></i>Settings</button>
             </div>
     </div>
@@ -177,7 +290,8 @@
     <div class="flex flex-col justify-center" style="height: 90%;">
         <!-- Top -->
         <div class="h-2/3 grow flex flex-row">
-            <!-- Hosts -->
+
+            <!-- Tables -->
             <div class="w-3/4 overflow-auto">
                 <!-- Top bar -->
                 <div class="w-full h-10 flex flex-row justify-between">
@@ -218,10 +332,10 @@
                     <tr>
                         <th class="border font-medium px-4 py-2">Name</th>
                         <th class="border font-medium px-4 py-2">Description</th>
-                        <th class="border font-medium px-4 py-2">Compatability</th>
+                        <th class="border font-medium px-4 py-2">compatibility</th>
                         <th class="border font-medium px-4 py-2">Type</th>
                         <th class="border font-medium px-4 py-2">Author</th>
-                        <th class="border font-medium px-4 py-2">Risk <i class="pl-1 fa-regular fa-circle-question fa-xs text-blue-600 cursor-pointer"></i></th>
+                        <th class="border font-medium px-4 py-2">Risk <i class="pl-1 fa-regular fa-circle-question fa-xs text-blue-600 cursor-pointer" title="How likely the victim is to notice this attack"></i></th>
                         <th class="border font-medium px-4 py-2">Actions</th>
                     </tr>
                     </thead>
@@ -283,7 +397,7 @@
                         <div class="h-full py-2 px-4 bg-slate-100 cursor-pointer font-medium" title="Filter"><i class="fa-solid fa-filter"></i></div>
                     </div>
                 </div>
-                <pre id="eventLog" class="text-sm overflow-y-auto break-words whitespace-normal pt-1.5 h-full"></pre>
+                <p id="eventLog" class="text-sm overflow-y-auto break-words whitespace-normal pt-1.5 h-full font-mono"></p>
                 <input type="text" id="chatbox" class=" text-sm bg-slate-400 px-1.5 py-1 text-white placeholder:text-slate-200" placeholder="Type here to chat...">
             </div>
         </div>
@@ -470,6 +584,10 @@
         ipcRenderer.invoke("getAllUsers")
     });
 
+    ipcRenderer.on("refreshPayloads", () => {
+        ipcRenderer.invoke("getAllPayloads")
+    });
+
 
     function createUser() {
         let username = document.getElementById("create-user-username")
@@ -495,7 +613,7 @@
         if(username.value !== "" && role.value !== "" && password.value !== "" && passwordConfirm.value !== "") {
             ipcRenderer.invoke("createUser", username.value, password.value, passwordConfirm.value, role.value);
             username.value = "";
-            role.value = "";
+            role.value = "User";
             password.value = "";
             passwordConfirm.value = "";
             document.getElementById("settings-create-user").classList.add("hidden");
@@ -521,6 +639,87 @@
         passwordConfirm.value = "";
         document.getElementById("settings-edit-user").classList.add("hidden");
         document.getElementById("settings-users").classList.remove("hidden");
+    }
+
+    function createPayload() {
+        let name = document.getElementById("create-payload-name")
+        let description = document.getElementById("create-payload-description")
+        let compatibility = document.getElementById("create-payload-compatibility")
+        let type = document.getElementById("create-payload-type")
+        let risk = document.getElementById("create-payload-risk")
+        let payload = document.getElementById("create-payload-payload")
+
+        let inputArray = [name, description, compatibility, type, risk, payload]
+        inputArray.forEach(input => {
+            console.log(input)
+            if (input.value === "") {
+                input.classList.add("border-red-500");
+            } else {
+                input.classList.remove("border-red-500");
+            }
+        })
+
+        if(name.value !== "" && description.value !== "" && compatibility.value !== "" && type.value !== "" && risk.value !== "" && payload.value !== "") {
+            ipcRenderer.invoke("createPayload", name.value, description.value, compatibility.value, type.value, risk.value, payload.value);
+            name.value = "";
+            description.value = "";
+            compatibility.value = "";
+            type.value = "Recon";
+            risk.value = ""
+            payload.value = "";
+            document.getElementById('blank-editor').classList.remove('hidden');
+            document.getElementById('payload-editor-create').classList.add('hidden');
+        }
+    }
+
+    function loadPayloadEditor(payload) {
+        document.getElementById("payload-editor-update").classList.remove("hidden");
+        document.getElementById("blank-editor").classList.add("hidden");
+        document.getElementById("payload-editor-create").classList.add("hidden");
+
+        document.getElementById("update-payload-id").value = payload._id;
+        document.getElementById("update-payload-name").value = payload.name;
+        document.getElementById("update-payload-description").value = payload.description;
+        document.getElementById("update-payload-compatibility").value = payload.compatibility;
+        document.getElementById("update-payload-type").value = payload.type;
+        document.getElementById("update-payload-risk").value = payload.risk;
+        document.getElementById("update-payload-payload").value = payload.payload;
+    }
+
+    function updatePayload() {
+        let id = document.getElementById("update-payload-id");
+        let name = document.getElementById("update-payload-name");
+        let description = document.getElementById("update-payload-description");
+        let compatibility = document.getElementById("update-payload-compatibility");
+        let type = document.getElementById("update-payload-type");
+        let risk = document.getElementById("update-payload-risk");
+        let payload = document.getElementById("update-payload-payload");
+
+        let inputArray = [name, description, compatibility, type, risk, payload]
+        inputArray.forEach(input => {
+            console.log(input)
+            if (input.value === "") {
+                input.classList.add("border-red-500");
+            } else {
+                input.classList.remove("border-red-500");
+            }
+        })
+
+        if(id.value !== "" && name.value !== "" && description.value !== "" && compatibility.value !== "" && type.value !== "" && risk.value !== "" && payload.value !== "") {
+            ipcRenderer.invoke("updatePayload", id.value, name.value, description.value, compatibility.value, type.value, risk.value, payload.value);
+
+            document.getElementById('blank-editor').classList.remove('hidden');
+            document.getElementById('payload-editor-update').classList.add('hidden');
+        }
+    }
+
+    function deletePayload(id) {
+        if (id === undefined) {
+            id = document.getElementById("update-payload-id").value;
+        }
+        ipcRenderer.invoke("deletePayload", id);
+        document.getElementById('blank-editor').classList.remove('hidden');
+        document.getElementById('payload-editor-update').classList.add('hidden');
     }
 
     ipcRenderer.invoke("getAllEventLogs")
@@ -638,6 +837,7 @@
     ipcRenderer.on("payloads", (event, payloads) => {
         // Clear current payloads from DOM
         document.getElementById("payloads-table-body").innerHTML = "";
+        document.getElementById("payload-editor-list").innerHTML = "";
         payloads.forEach(payload => {
             const payloadName = xssSanitize(payload.name)
             const payloadDescription = xssSanitize(payload.description)
@@ -652,9 +852,11 @@
                 <td class="border px-4 py-2 truncate">${payloadType}</td>
                 <td class="border px-4 py-2 truncate">${payloadAuthor}</td> 
                 <td class="border px-4 py-2 truncate">${payloadRisk}</td>
-                <td class="border px-4 py-2 truncate"><i onclick="navigator.clipboard.writeText('${payloadName}')" class="fa-solid fa-copy px-2" title="Copy payload name to clipboard"></i><i class="fa-solid fa-pencil px-2" title="Edit payload"></i><i class="px-2 fa-solid fa-trash-can" title="Delete payload"></i></td>
+                <td class="border px-4 py-2 truncate"><i onclick="navigator.clipboard.writeText('${payloadName}')" class="fa-solid fa-copy px-2" title="Copy payload name to clipboard"></i><i onclick="document.getElementById('payloadEditorModal').classList.remove('hidden'); loadPayloadEditor(${JSON.stringify(payload).split('"').join("&quot;")})" class="fa-solid fa-pencil px-2" title="Edit payload"></i><i onclick="deletePayload('${xssSanitize(payload._id.toString())}')" class="px-2 fa-solid fa-trash-can" title="Delete payload"></i></td>
             </tr>`
+
             document.getElementById("payloads-table-body").innerHTML += tableRow
+            document.getElementById("payload-editor-list").innerHTML += `<li class="cursor-pointer hover:text-rose-500" onclick="loadPayloadEditor(${JSON.stringify(payload).split('"').join("&quot;")})">${payloadName}</li>`
         }) 
     })
 
@@ -696,7 +898,7 @@
                 ipcRenderer.invoke("processCommand", commandInput.value)
                 commandInput.value = ""
             } else {
-                document.getElementById("commandOutput").innerHTML += `<pre>${xssSanitize(commandInput.value)}</pre>`;
+                document.getElementById("commandOutput").innerHTML += `<p class="font-mono">${xssSanitize(commandInput.value)}</p>`;
                 ipcRenderer.invoke("processCommand", commandInput.value)
                 .then((result => {  
                     commandHistory = result.history
@@ -705,11 +907,11 @@
                     output = xssSanitize(output)
 
                     if (type === "error") {
-                        document.getElementById("commandOutput").innerHTML += `<pre class="text-red-600">${output}</pre>`;
+                        document.getElementById("commandOutput").innerHTML += `<p class="text-red-600 font-mono">${output}</p>`;
                     } else if (type === "success") {
-                        document.getElementById("commandOutput").innerHTML += `<pre class="text-green-500">${output}</pre>`;
+                        document.getElementById("commandOutput").innerHTML += `<p class="text-green-500 font-mono">${output}</p>`;
                     }else {
-                        document.getElementById("commandOutput").innerHTML += `<pre>${output}</pre>`;
+                        document.getElementById("commandOutput").innerHTML += `<p class="font-mono">${output}</p>`;
                     }
 
                     commandInput.value = "";
@@ -735,6 +937,8 @@
             commandHistoryIndex = 0;
         }
     });
+
+    // Drag and drop
 
     function allowDrop(event) {
         event.preventDefault();
@@ -769,7 +973,6 @@
     *:focus {
         outline: none;
     }
-
 </style>
 </body>
 </html>

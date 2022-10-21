@@ -2,7 +2,7 @@ const { app, BrowserWindow, ipcMain } = require("electron")
 const login = require("./helpers/auth")
 const { getAllEventLogs, createEventLog } = require("./helpers/eventLogs")
 const { getAllImplants, deleteImplantById } = require("./helpers/implants");
-const { getAllPayloads } = require("./helpers/payloads");
+const { getAllPayloads, createPayload, updatePayloadById, deletePayloadById } = require("./helpers/payloads");
 const { getAllHosts } = require("./helpers/hosts");
 const { getAllFindings, deleteFindingById } = require("./helpers/findings");
 const { getAllUsers, deleteUserById, createUser, updateUserById } = require("./helpers/users");
@@ -165,6 +165,24 @@ const createWindow = () => {
             // event.sender.send("passwordsDontMatch");
         }
     })
+
+    ipcMain.handle("createPayload", async (event, name, description, compatibility, type, risk, payload) => {
+        const jwt = store.get("session");
+        await createPayload(jwt, name, description, compatibility, type, risk, payload);
+        event.sender.send("refreshPayloads");
+    });
+
+    ipcMain.handle("updatePayload", async (event, id, name, description, compatibility, type, risk, payload) => {
+        const jwt = store.get("session");
+        await updatePayloadById(jwt, id, name, description, compatibility, type, risk, payload);
+        event.sender.send("refreshPayloads");
+    });
+
+    ipcMain.handle("deletePayload", async (event, id) => {
+        const jwt = store.get("session");
+        await deletePayloadById(jwt, id);
+        event.sender.send("refreshPayloads");
+    });
 
     // win.openDevTools(); // Open DevTools
     win.loadFile("login.html");

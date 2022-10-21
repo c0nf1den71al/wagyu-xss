@@ -8,6 +8,7 @@ const payloadSchema = new Schema({
     },
     name: {
         type: String,
+        unique: true,
         required: [true, "Payload must have a name"]
     },
     description: {
@@ -25,7 +26,7 @@ const payloadSchema = new Schema({
     type: {
         type: String,
         required: [true, "Payload must have a type"],
-        enum: ["Recon", "Lateral Movement", "Info Gathering", "Data Exfiltration", "Exploit", "Misc"]
+        enum: ["Recon", "Lateral Movement", "Data Exfiltration", "Exploit", "Misc."]
 
     },
     author: {

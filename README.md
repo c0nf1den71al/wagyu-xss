@@ -7,26 +7,8 @@ A dynamic cross-site scripting (XSS) payload delivery system with team server ab
 ![Client Login Page](./images/client-login.png) ![Client Payloads Table](./images/client-payloads.png)
 
 ---
-## Manual Installation
-### Team Server
-* Install [Docker](https://docs.docker.com/engine/installation/)
-* Clone this repository
-* `cd /server`
-* `npm install`
-* Modify the environment variables within the `docker-compose.yml` file:
-    - `PORT` is used to define the port the teamserver will run on
-    - `TOKEN_SECRET` is the secret used to sign JWTs
-    - `TEAMSERVER_URI` is the IP address or domain which members will use to authenticate into the teamserver
-* Run `docker compose up -d` to start the teamserver
-
-
-### Client
-* Install [Node.js](https://nodejs.org/en/download/)
-* Clone this repository
-* `cd /client`
-* `npm install`
-* `npm start`
-* Login with the default credentials `wagyu:wagyu`
+## Installation
+Please check out the [Wiki](https://wagyu-docs.jamiepegg.com/) for installation instructions. 
 ---
 ## To-do List
 ### Client
