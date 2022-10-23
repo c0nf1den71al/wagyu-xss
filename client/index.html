@@ -437,6 +437,7 @@
     let globalRole = "User" // Only affects the UI
 
     ipcRenderer.invoke("checkLogin").then((res) => {
+        console.log(res)
         if (res === false) {
             window.location.href = "login.html"
         } else {

@@ -1,5 +1,5 @@
 const { app, BrowserWindow, ipcMain } = require("electron")
-const login = require("./helpers/auth")
+const { login, checkUser } = require("./helpers/auth")
 const { getAllEventLogs, createEventLog } = require("./helpers/eventLogs")
 const { getAllImplants, deleteImplantById } = require("./helpers/implants");
 const { getAllPayloads, createPayload, updatePayloadById, deletePayloadById } = require("./helpers/payloads");
@@ -9,6 +9,7 @@ const { getAllUsers, deleteUserById, createUser, updateUserById } = require("./h
 const processCommand = require("./helpers/commands");
 const path = require("path")
 const Store = require("electron-store");
+const { verifyJwt } = require("../server/controllers/authControllers");
 
 const createWindow = () => {
     const win = new BrowserWindow({
@@ -41,17 +42,17 @@ const createWindow = () => {
                 global.username = username;
                 await createEventLog(data.jwt, "Team Server", `Operator ${data.username} joined the team server`, "info");
                 await win.loadFile("index.html");
-            } // else {
-            // handle error here
-            // }
+            } else if(data.error){
+                event.sender.send("errorMessage", data.error);
+            }
         })(username, password, server);
     });
 
     ipcMain.handle("checkLogin", async (event) => {
         const jwt = store.get("session");
-        // Check jwt is valid
         if (await jwt !== undefined) {
-            return {username: store.get("username"), role: store.get("role")};
+            if(await checkUser(jwt, store.get("username"))) return {username: store.get("username"), role: store.get("role")};
+            else return false;
         } else {
             return false
         }
