@@ -73,6 +73,7 @@
                                         <option value="Exploit">Exploit</option>
                                         <option value="Lateral Movement">Lateral Movement</option>
                                         <option value="Data Exfiltration">Data Exfiltration</option>
+                                        <option value="Persistence">Persistence</option>
                                         <option value="Misc.">Misc.</option>
                                     </select>
                                 </div>
@@ -81,8 +82,10 @@
                                     <input type="number" placeholder="1" min="1" max="5" id="create-payload-risk" class="appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5">
                                 </div>
                             </div>
-                            <label class="font-medium" for="payload">Payload</label>
+                            <label class="font-medium" for="create-payload-payload">Payload</label>
                             <textarea id="create-payload-payload" onkeydown="if(event.keyCode===9||event.key==='Tab'){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+'\t'+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}" placeholder="Payload..." cols="100" rows="12" class="appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5 font-mono"></textarea>
+                            <label class="font-medium" for="create-payload-notes">Notes</label>
+                            <textarea id="create-payload-notes" onkeydown="if(event.keyCode===9||event.key==='Tab'){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+'\t'+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}" placeholder="Notes..." cols="100" rows="12" class="appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5"></textarea>
                             <div class="flex flex-row w-full justify-end space-x-3">
                                 <button onclick="document.getElementById('blank-editor').classList.remove('hidden'); document.getElementById('payload-editor-create').classList.add('hidden');" class="py-2 px-3 bg-gray-200 text-gray-400 rounded-md font-medium">Back</button>
                                 <button class="py-2 px-3 bg-rose-300 text-rose-800 rounded-md font-medium" onclick="createPayload()">Create</button>
@@ -126,6 +129,8 @@
                             </div>
                             <label class="font-medium" for="update-payload-payload">Payload</label>
                             <textarea id="update-payload-payload" onkeydown="if(event.keyCode===9||event.key==='Tab'){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+'\t'+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}" placeholder="Payload..." cols="100" rows="12" class="appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5 font-mono"></textarea>
+                            <label class="font-medium" for="update-payload-notes">Notes</label>
+                            <textarea id="update-payload-notes" onkeydown="if(event.keyCode===9||event.key==='Tab'){var v=this.value,s=this.selectionStart,e=this.selectionEnd;this.value=v.substring(0, s)+'\t'+v.substring(e);this.selectionStart=this.selectionEnd=s+1;return false;}" placeholder="Notes..." cols="100" rows="12" class="appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5"></textarea>
                             <div class="flex flex-row w-full justify-end space-x-3">
                                 <button onclick="document.getElementById('blank-editor').classList.remove('hidden'); document.getElementById('payload-editor-update').classList.add('hidden');" class="py-2 px-3 bg-gray-200 text-gray-400 rounded-md font-medium">Back</button>
                                 <button class="py-2 px-3 bg-rose-300 text-rose-800 rounded-md font-medium" onclick="updatePayload()">Update</button>
@@ -336,13 +341,14 @@
                         <th class="border font-medium px-4 py-2">Type</th>
                         <th class="border font-medium px-4 py-2">Author</th>
                         <th class="border font-medium px-4 py-2">Risk <i class="pl-1 fa-regular fa-circle-question fa-xs text-blue-600 cursor-pointer" title="How likely the victim is to notice this attack"></i></th>
+                        <th class="border font-medium px-4 py-2">Notes</th>
                         <th class="border font-medium px-4 py-2">Actions</th>
                     </tr>
                     </thead>
                     <tbody id="payloads-table-body" class="text-center"></tbody>
                     <tfoot>
                     <tr>
-                        <td class="px-4 py-2 text-slate-300 text-center" colspan="7">Create more payloads for them to show here...</td>
+                        <td class="px-4 py-2 text-slate-300 text-center" colspan="8">Create more payloads for them to show here...</td>
                     </tr>
                     </tfoot>
                 </table>
@@ -431,6 +437,7 @@
     let globalRole = "User" // Only affects the UI
 
     ipcRenderer.invoke("checkLogin").then((res) => {
+        console.log(res)
         if (res === false) {
             window.location.href = "login.html"
         } else {
@@ -648,10 +655,10 @@
         let type = document.getElementById("create-payload-type")
         let risk = document.getElementById("create-payload-risk")
         let payload = document.getElementById("create-payload-payload")
+        let notes = document.getElementById("create-payload-notes")
 
         let inputArray = [name, description, compatibility, type, risk, payload]
         inputArray.forEach(input => {
-            console.log(input)
             if (input.value === "") {
                 input.classList.add("border-red-500");
             } else {
@@ -660,13 +667,14 @@
         })
 
         if(name.value !== "" && description.value !== "" && compatibility.value !== "" && type.value !== "" && risk.value !== "" && payload.value !== "") {
-            ipcRenderer.invoke("createPayload", name.value, description.value, compatibility.value, type.value, risk.value, payload.value);
+            ipcRenderer.invoke("createPayload", name.value, description.value, compatibility.value, type.value, risk.value, payload.value, notes.value);
             name.value = "";
             description.value = "";
             compatibility.value = "";
             type.value = "Recon";
             risk.value = ""
             payload.value = "";
+            notes.value = "";
             document.getElementById('blank-editor').classList.remove('hidden');
             document.getElementById('payload-editor-create').classList.add('hidden');
         }
@@ -684,6 +692,7 @@
         document.getElementById("update-payload-type").value = payload.type;
         document.getElementById("update-payload-risk").value = payload.risk;
         document.getElementById("update-payload-payload").value = payload.payload;
+        document.getElementById("update-payload-notes").value = payload.notes || "";
     }
 
     function updatePayload() {
@@ -694,10 +703,10 @@
         let type = document.getElementById("update-payload-type");
         let risk = document.getElementById("update-payload-risk");
         let payload = document.getElementById("update-payload-payload");
+        let notes = document.getElementById("update-payload-notes");
 
         let inputArray = [name, description, compatibility, type, risk, payload]
         inputArray.forEach(input => {
-            console.log(input)
             if (input.value === "") {
                 input.classList.add("border-red-500");
             } else {
@@ -706,7 +715,7 @@
         })
 
         if(id.value !== "" && name.value !== "" && description.value !== "" && compatibility.value !== "" && type.value !== "" && risk.value !== "" && payload.value !== "") {
-            ipcRenderer.invoke("updatePayload", id.value, name.value, description.value, compatibility.value, type.value, risk.value, payload.value);
+            ipcRenderer.invoke("updatePayload", id.value, name.value, description.value, compatibility.value, type.value, risk.value, payload.value, notes.value);
 
             document.getElementById('blank-editor').classList.remove('hidden');
             document.getElementById('payload-editor-update').classList.add('hidden');
@@ -845,13 +854,18 @@
             const payloadType = xssSanitize(payload.type)
             const payloadAuthor = xssSanitize(payload.author)
             const payloadRisk = payload.risk
+            let payloadNotes = ""
+            if(payload.notes !== undefined && payload.notes !== null && payload.notes !== "") {
+                payloadNotes = xssSanitize(payload.notes)
+            }
             const tableRow = `<tr class="hover:bg-slate-100 cursor-pointer" draggable="true" ondragend="dragEnd()" ondragstart="drag(event)">
                 <td class="border px-4 py-2 truncate">${payloadName}</td>
-                <td class="border px-4 py-2 truncate text-left">${payloadDescription}</td>
+                <td class="border px-4 py-2 truncate text-left max-w-lg" title="${payloadDescription}">${payloadDescription}</td>
                 <td class="border px-4 py-2 truncate">${payloadCompatibility}</td>
                 <td class="border px-4 py-2 truncate">${payloadType}</td>
                 <td class="border px-4 py-2 truncate">${payloadAuthor}</td> 
                 <td class="border px-4 py-2 truncate">${payloadRisk}</td>
+                <td class="border px-4 py-2 truncate text-left max-w-lg" title="${payloadNotes}">${payloadNotes}</td>
                 <td class="border px-4 py-2 truncate"><i onclick="navigator.clipboard.writeText('${payloadName}')" class="fa-solid fa-copy px-2" title="Copy payload name to clipboard"></i><i onclick="document.getElementById('payloadEditorModal').classList.remove('hidden'); loadPayloadEditor(${JSON.stringify(payload).split('"').join("&quot;")})" class="fa-solid fa-pencil px-2" title="Edit payload"></i><i onclick="deletePayload('${xssSanitize(payload._id.toString())}')" class="px-2 fa-solid fa-trash-can" title="Delete payload"></i></td>
             </tr>`
 
@@ -898,7 +912,7 @@
                 ipcRenderer.invoke("processCommand", commandInput.value)
                 commandInput.value = ""
             } else {
-                document.getElementById("commandOutput").innerHTML += `<p class="font-mono">${xssSanitize(commandInput.value)}</p>`;
+                document.getElementById("commandOutput").innerHTML += `<pre class="font-mono text-gray-400">${xssSanitize(commandInput.value)}</pre>`;
                 ipcRenderer.invoke("processCommand", commandInput.value)
                 .then((result => {  
                     commandHistory = result.history
@@ -907,11 +921,11 @@
                     output = xssSanitize(output)
 
                     if (type === "error") {
-                        document.getElementById("commandOutput").innerHTML += `<p class="text-red-600 font-mono">${output}</p>`;
+                        document.getElementById("commandOutput").innerHTML += `<pre class="text-red-600 font-mono">${output}</pre>`;
                     } else if (type === "success") {
-                        document.getElementById("commandOutput").innerHTML += `<p class="text-green-500 font-mono">${output}</p>`;
+                        document.getElementById("commandOutput").innerHTML += `<pre class="text-green-500 font-mono">${output}</pre>`;
                     }else {
-                        document.getElementById("commandOutput").innerHTML += `<p class="font-mono">${output}</p>`;
+                        document.getElementById("commandOutput").innerHTML += `<pre class="font-mono">${output}</pre>`;
                     }
 
                     commandInput.value = "";

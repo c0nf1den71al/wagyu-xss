@@ -26,7 +26,7 @@ const payloadSchema = new Schema({
     type: {
         type: String,
         required: [true, "Payload must have a type"],
-        enum: ["Recon", "Lateral Movement", "Data Exfiltration", "Exploit", "Misc."]
+        enum: ["Recon", "Lateral Movement", "Data Exfiltration", "Exploit", "Persistence", "Misc."]
 
     },
     author: {
@@ -38,6 +38,10 @@ const payloadSchema = new Schema({
         required: [true, "Payload must have a risk"],
         min: 1,
         max: 5
+    },
+    notes: {
+        type: String,
+        default: "",
     }
 });
 

@@ -10,11 +10,23 @@ async function login (username, password) {
     })
     const data = await response.json();
     if (await data.jwt) return data;
-    else return false;
+    else return await data;
 }
 
-// Implement me!
-async function checkUser(session) {
-    return session
+async function checkUser(session, username) {
+    const response = await fetch(`${global.server}/api/v1/verify`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({"jwt": session})
+    })
+    if (await response.status == 200) {
+        const data = await response.json();
+        if (await data.username == username) return true;
+        else return false;
+    } else return false;
+    
 }
-module.exports = login
+
+module.exports = { login, checkUser };

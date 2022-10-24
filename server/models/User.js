@@ -46,10 +46,11 @@ userSchema.statics.login = async function (username, password) {
         if (auth) {
             return user;
         }
-        throw Error("Username or password is incorrect.");
+        return {error:"Username or password is incorrect."};
     }
-    throw Error("Username or password is incorrect.");
+    return {error:"Username or password is incorrect."};
 };
+
 
 const User = mongoose.model("User", userSchema);
 module.exports = User;

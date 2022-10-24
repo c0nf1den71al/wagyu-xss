@@ -43,6 +43,7 @@
             <input type="text" placeholder="wagyu" name="username" id="username" class="appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5">
             <label class="font-medium" for="password">Password</label>
             <input type="password" placeholder="••••••••" name="password" id="password" class="appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5">
+            <p class="text-red-500 pb-5" id="error"></p>
             <button id="login" class="py-2 px-3 w-1/6 bg-rose-300 text-rose-800 rounded-md font-bold">Go!</button>
         </div>
     </div>
@@ -74,6 +75,10 @@
             document.getElementById("username").value = username;
         }
     })
+
+    ipcRenderer.on("errorMessage", (event, message) => {
+        document.getElementById("error").innerText = message;
+    });
 
     document.getElementById("login").addEventListener("click", () => {
         const username = document.getElementById("username").value;

