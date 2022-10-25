@@ -42,3 +42,4 @@ Please check out the [Wiki](https://wagyu-docs.jamiepegg.com/) for installation 
 ## Known Issues
 * If a payload redirects the user, the command to set the payload as executed is never complete. Therefore, the redirect happens whenever the user returns to the page.
 * Unacknowledged alerts cause the script to hang and queue is never cleared.
+* Command history isn't fetched until a command is executed on first launch.

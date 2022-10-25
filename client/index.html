@@ -25,6 +25,24 @@
 <body>
 <div class="flex flex-col h-screen w-screen relative">   
 
+    <!-- Alert Modal -->
+    <div id="alertModal" class="hidden absolute top-0 left-0 w-full h-full bg-black bg-opacity-80 z-50 flex items-center justify-center">
+        <div class="w-1/3 h-1/3 px-4 py-3 bg-white rounded-lg flex flex-col justify-between">
+            <div class="flex flex-row justify-between">
+                <h1 id="alertTitle" class="text-2xl font-bold">Default Title</h1>
+            </div>
+            <div id="alertBody" class="flex flex-col">
+
+            </div>
+            <div id="alertFooter" class="flex flex-row justify-end pb-2">
+                <div class="flex flex-row w-full justify-end space-x-3">
+                    <button class="py-2 px-3 bg-gray-200 text-gray-400 rounded-md font-medium" onclick="document.getElementById('alertModal').classList.add('hidden');">Back</button>
+                    <button class="py-2 px-3 bg-rose-300 text-rose-800 rounded-md font-medium" id="submitButton">Set</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Payload Editor -->
     <div id="payloadEditorModal" class="hidden absolute top-0 left-0 w-full h-full bg-black bg-opacity-80 z-50 flex items-center justify-center">
         <div class="w-3/4 h-3/4 bg-white rounded-lg flex flex-row">     
@@ -294,12 +312,11 @@
     <!-- Main -->
     <div class="flex flex-col justify-center" style="height: 90%;">
         <!-- Top -->
-        <div class="h-2/3 grow flex flex-row">
+        <div class="h-2/3 flex flex-row">
+            <div class="w-3/4">
 
-            <!-- Tables -->
-            <div class="w-3/4 overflow-auto">
                 <!-- Top bar -->
-                <div class="w-full h-10 flex flex-row justify-between">
+                <div class="w-full flex flex-row justify-between h-[9%]">
                     <div class="flex">
                         <div id="hosts-tab" class="h-full py-2 px-4 bg-rose-200 text-rose-800 cursor-pointer font-medium">Hosts</div>
                         <div id="payloads-tab" class="h-full py-2 px-4 cursor-pointer hover:bg-rose-50">Payloads</div>
@@ -309,88 +326,92 @@
                     <div id="refresh" class="h-full py-2 px-4 hover:rotate-180 duration-300 cursor-pointer font-medium" title="Refresh"><i class="fa-solid fa-rotate-right"></i></div>
                 </div>
 
-                <!-- Hosts table -->
-                <table id="hosts-table" class="w-full">
-                    <thead class="bg-slate-100">
+                <!-- Tables -->
+                <div id="tables" class="overflow-auto h-[91%]">
+                    <!-- Hosts table -->
+                    <table id="hosts-table" class="w-full">
+                        <thead class="bg-slate-100 sticky top-[-1px]">
+                            <tr>
+                                <th class="border font-medium px-4 py-2">ID</th>
+                                <th class="border font-medium px-4 py-2">Current Status</th>
+                                <th class="border font-medium px-4 py-2">Public IP</th>
+                                <th class="border font-medium px-4 py-2">OS</th>
+                                <th class="border font-medium px-4 py-2">Browser</th>
+                                <th class="border font-medium px-4 py-2">Current Tab</th>
+                                <th class="border font-medium px-4 py-2">Last Seen</th>
+                                <th class="border font-medium px-4 py-2">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-center" id="hosts-table-body"></tbody>
+                        <tfoot>
+                            <tr>
+                                <td class="px-4 py-2 text-slate-300 text-center" colspan="8">Continue compromising hosts for them to show here...</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                    <!-- Payloads table -->
+                    <table id="payloads-table" class="w-full hidden">
+                        <thead class="bg-slate-100 sticky top-[-1px]">
                         <tr>
-                            <th class="border font-medium px-4 py-2">ID</th>
-                            <th class="border font-medium px-4 py-2">Current Status</th>
-                            <th class="border font-medium px-4 py-2">Public IP</th>
-                            <th class="border font-medium px-4 py-2">OS</th>
-                            <th class="border font-medium px-4 py-2">Browser</th>
-                            <th class="border font-medium px-4 py-2">Current Tab</th>
-                            <th class="border font-medium px-4 py-2">Last Seen</th>
+                            <th class="border font-medium px-4 py-2">Name</th>
+                            <th class="border font-medium px-4 py-2">Description</th>
+                            <th class="border font-medium px-4 py-2">compatibility</th>
+                            <th class="border font-medium px-4 py-2">Type</th>
+                            <th class="border font-medium px-4 py-2">Author</th>
+                            <th class="border font-medium px-4 py-2">Risk</th>
+                            <th class="border font-medium px-4 py-2">Notes</th>
                             <th class="border font-medium px-4 py-2">Actions</th>
                         </tr>
-                    </thead>
-                    <tbody class="text-center" id="hosts-table-body"></tbody>
-                    <tfoot>
+                        </thead>
+                        <tbody id="payloads-table-body" class="text-center"></tbody>
+                        <tfoot>
                         <tr>
-                            <td class="px-4 py-2 text-slate-300 text-center" colspan="8">Continue compromising hosts for them to show here...</td>
+                            <td class="px-4 py-2 text-slate-300 text-center" colspan="8">Create more payloads for them to show here...</td>
                         </tr>
-                    </tfoot>
-                </table>
+                        </tfoot>
+                    </table>
 
-                <!-- Payloads table -->
-                <table id="payloads-table" class="w-full hidden">
-                    <thead class="bg-slate-100">
-                    <tr>
-                        <th class="border font-medium px-4 py-2">Name</th>
-                        <th class="border font-medium px-4 py-2">Description</th>
-                        <th class="border font-medium px-4 py-2">compatibility</th>
-                        <th class="border font-medium px-4 py-2">Type</th>
-                        <th class="border font-medium px-4 py-2">Author</th>
-                        <th class="border font-medium px-4 py-2">Risk <i class="pl-1 fa-regular fa-circle-question fa-xs text-blue-600 cursor-pointer" title="How likely the victim is to notice this attack"></i></th>
-                        <th class="border font-medium px-4 py-2">Notes</th>
-                        <th class="border font-medium px-4 py-2">Actions</th>
-                    </tr>
-                    </thead>
-                    <tbody id="payloads-table-body" class="text-center"></tbody>
-                    <tfoot>
-                    <tr>
-                        <td class="px-4 py-2 text-slate-300 text-center" colspan="8">Create more payloads for them to show here...</td>
-                    </tr>
-                    </tfoot>
-                </table>
-
-                <!-- Implants Table -->
-                <table id="implants-table" class="w-full hidden">
-                    <thead class="bg-slate-100">
-                    <tr>
-                        <th class="border font-medium px-4 py-2">ID</th>
-                        <th class="border font-medium px-4 py-2">Date Created</th>
-                        <th class="border font-medium px-4 py-2">Callback Server</th>
-                        <th class="border font-medium px-4 py-2">Callback Interval</th>
-                        <th class="border font-medium px-4 py-2">Actions</th>
-                    </tr>
-                    </thead>
-                    <tbody id="implants-table-body" class="text-center"></tbody>
-                    <tfoot>
+                    <!-- Implants Table -->
+                    <table id="implants-table" class="w-full hidden">
+                        <thead class="bg-slate-100 sticky top-[-1px]">
                         <tr>
-                            <td class="px-4 py-2 text-slate-300 text-center" colspan="5">Create more implants for them to show here...</td>
+                            <th class="border font-medium px-4 py-2">ID</th>
+                            <th class="border font-medium px-4 py-2">Date Created</th>
+                            <th class="border font-medium px-4 py-2">Callback Server</th>
+                            <th class="border font-medium px-4 py-2">Initial Payload</th>
+                            <th class="border font-medium px-4 py-2">Callback Interval</th>
+                            <th class="border font-medium px-4 py-2">Actions</th>
                         </tr>
-                    </tfoot>
-                </table>
+                        </thead>
+                        <tbody id="implants-table-body" class="text-center"></tbody>
+                        <tfoot>
+                            <tr>
+                                <td class="px-4 py-2 text-slate-300 text-center" colspan="6">Create more implants for them to show here...</td>
+                            </tr>
+                        </tfoot>
+                    </table>
 
-                <!-- Findings Table -->
-                <table id="findings-table" class="w-full hidden">
-                    <thead class="bg-slate-100">
-                    <tr>
-                        <th class="border font-medium px-4 py-2">Date Created</th>
-                        <th class="border font-medium px-4 py-2">Name</th>
-                        <th class="border font-medium px-4 py-2">Value</th>
-                        <th class="border font-medium px-4 py-2">Created By</th>
-                        <th class="border font-medium px-4 py-2">Associated Host</th>
-                        <th class="border font-medium px-4 py-2">Actions</th>
-                    </tr>
-                    </thead>
-                    <tbody id="findings-table-body" class="text-center"></tbody>
-                    <tfoot>
+                    <!-- Findings Table -->
+                    <table id="findings-table" class="w-full hidden">
+                        <thead class="bg-slate-100 sticky top-[-1px]">
                         <tr>
-                            <td class="px-4 py-2 text-slate-300 text-center" colspan="6">Execute payloads for the findings to show here...</td>
+                            <th class="border font-medium px-4 py-2">Date Created</th>
+                            <th class="border font-medium px-4 py-2">Name</th>
+                            <th class="border font-medium px-4 py-2">Value</th>
+                            <th class="border font-medium px-4 py-2">Created By</th>
+                            <th class="border font-medium px-4 py-2">Associated Host</th>
+                            <th class="border font-medium px-4 py-2">Actions</th>
                         </tr>
-                    </tfoot>
-                </table>
+                        </thead>
+                        <tbody id="findings-table-body" class="text-center"></tbody>
+                        <tfoot>
+                            <tr>
+                                <td class="px-4 py-2 text-slate-300 text-center" colspan="6">Execute payloads for the findings to show here...</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
             </div>
 
             <!-- Event Log -->
@@ -409,7 +430,7 @@
         </div>
 
         <!-- Command Line -->
-        <div class="h-1/3 bg-slate-100 p-5 relative z-0 overflow-auto" onclick="document.getElementById('command').focus()" ondrop="drop(event)" ondragover="allowDrop(event)">
+        <div id="commandContainer" class="h-1/3 bg-slate-100 p-5 relative z-0 overflow-auto" onclick="document.getElementById('command').focus()" ondrop="drop(event)" ondragover="allowDrop(event)">
             <div id="commandOutput" class="text-sm"></div> <!-- Insert command output here -->
             <!-- Input -->
             <div class="flex text-sm">
@@ -437,7 +458,6 @@
     let globalRole = "User" // Only affects the UI
 
     ipcRenderer.invoke("checkLogin").then((res) => {
-        console.log(res)
         if (res === false) {
             window.location.href = "login.html"
         } else {
@@ -733,8 +753,13 @@
 
     ipcRenderer.invoke("getAllEventLogs")
     ipcRenderer.on('eventLogs', (event, eventLogs) => {
-        // Clear current event logs from DOM
-        document.getElementById("eventLog").innerHTML = "";
+        
+        // If there are new event logs scroll to the bottom of the div
+        if (eventLogs.length > document.getElementById("eventLog").children.length) {
+            document.getElementById("eventLog").scrollTop = document.getElementById("eventLog").scrollHeight;
+       }
+
+        document.getElementById("eventLog").innerHTML = ""; // Clear current event logs from DOM
 
         eventLogs.forEach(log => {
             const timestamp = new Date(log.timestamp).toLocaleTimeString()
@@ -748,7 +773,7 @@
                     document.getElementById("eventLog").innerHTML += `<p class="text-green-500 px-1.5">[${timestamp}][${createdBy}] ${message}</p>`
                     break;
                 case "error":
-                    document.getElementById("eventLog").innerHTML += `<p class="text-red-500 px-1.5">[${timestamp}][${createdBy}] ${message}</p>`
+                    document.getElementById("eventLog").innerHTML += `<p class="text-red-400 px-1.5">[${timestamp}][${createdBy}] ${message}</p>`
                     break;
                 case "warning":
                     document.getElementById("eventLog").innerHTML += `<p class="text-yellow-400 px-1.5">[${timestamp}][${createdBy}] ${message}</p>`
@@ -759,6 +784,8 @@
             }
         });
     })
+
+    setTimeout(function(){document.getElementById("eventLog").scrollTop = document.getElementById("eventLog").scrollHeight;}, 200); // Scroll to the bottom once on first load
 
     document.getElementById("chatbox").addEventListener("keyup", function(event) {
         if (event.key === "Enter") {
@@ -798,18 +825,45 @@
             const timestamp = new Date(implant.timestamp).toLocaleString()
             const implantId = xssSanitize(implant._id.toString())
             const implantServer = xssSanitize(implant.server)
+            const initialPayloadName = xssSanitize(implant.initialPayload.name)
             const implantLink = xssSanitize(`${serverDomain}/implants/${implantId}.js`)
             const implantCallback = implant.callbackInterval / 1000
             const tableRow = `<tr">
                 <td class="border px-4 py-2 truncate">${implantId}</td>
                 <td class="border px-4 py-2 truncate text-center">${timestamp}</td>
                 <td class="border px-4 py-2 truncate">${implantServer}</td>
+                <td class="border px-4 py-2 truncate">${initialPayloadName ? initialPayloadName : `<i onclick="initialPayloadAlert('${implantId}')" class="px-2 fa-solid fa-plus cursor-pointer" title="Add an initial payload"></i>`}</td>
                 <td class="border px-4 py-2 truncate">${implantCallback} Seconds</td>
-                <td class="border px-4 py-2 truncate"><i onclick="navigator.clipboard.writeText('${implantLink}')" class="fa-solid fa-copy px-2" title="Copy implant link to clipboard"></i><i onclick="shell.openExternal('${implantLink}')" class="fa-solid px-2 fa-arrow-up-right-from-square" title="Open implant in browser"></i><i onclick="ipcRenderer.invoke('deleteImplantById', '${implantId}')" class="px-2 fa-solid fa-trash-can" title="Delete implant"></i></td></td>
+                <td class="border px-4 py-2 truncate"><i onclick="navigator.clipboard.writeText('${implantLink}')" class="fa-solid fa-copy px-2 cursor-pointer" title="Copy implant link to clipboard"></i><i onclick="shell.openExternal('${implantLink}')" class="fa-solid px-2 fa-arrow-up-right-from-square cursor-pointer" title="Open implant in browser"></i><i onclick="ipcRenderer.invoke('deleteImplantById', '${implantId}')" class="px-2 fa-solid fa-trash-can cursor-pointer" title="Delete implant"></i></td></td>
             </tr>`
             document.getElementById("implants-table-body").innerHTML += tableRow
         }) 
     })
+
+    function initialPayloadAlert(implantId) {
+        document.getElementById("alertTitle").innerText = "Initial Payload"
+        document.getElementById("submitButton").addEventListener("click", () => {
+            ipcRenderer.invoke("setInitialPayload", implantId, document.getElementById('initialPayload').value);
+            document.getElementById('alertModal').classList.add('hidden')
+        })
+        document.getElementById("alertBody").innerHTML = `
+        <p class="text-gray-300 pb-4">Initial payload to run when implant is first executed.</p>
+        <label For="initialPayload" class="font-medium">Payload</label>
+        <select id='initialPayload' class='appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5'></select>`
+
+        ipcRenderer.invoke("getAllPayloads").then(result => {
+            document.getElementById("initialPayload").innerHTML = ""
+            result.forEach(payload => {
+                const payloadId = xssSanitize(payload._id.toString())
+                const payloadName = xssSanitize(payload.name)
+                document.getElementById("initialPayload").innerHTML += `<option value="${payloadId}">${payloadName}</option>`
+            })
+        })
+
+        ipcRenderer.invoke("getAllPayloads")
+        document.getElementById("alertModal").classList.remove("hidden")
+        
+    }
 
     ipcRenderer.on("refreshImplants", () => {
         ipcRenderer.invoke("getAllImplants")
@@ -832,7 +886,7 @@
                 <td class="border px-4 py-2 truncate">${findingValue}</td>
                 <td class="border px-4 py-2 truncate">${findingAuthor}</td>
                 <td class="border px-4 py-2 truncate">${findingHostId}</td>
-                <td class="border px-4 py-2 truncate"><i onclick="navigator.clipboard.writeText('${findingValue}')" class="fa-solid fa-copy px-2" title="Copy finding value to clipboard"></i><i onclick="ipcRenderer.invoke('deleteFindingById', '${findingId}')" class="px-2 fa-solid fa-trash-can" title="Delete finding"></i></td></td>
+                <td class="border px-4 py-2 truncate"><i onclick="navigator.clipboard.writeText('${findingValue}')" class="fa-solid fa-copy px-2 cursor-pointer" title="Copy finding value to clipboard"></i><i onclick="ipcRenderer.invoke('deleteFindingById', '${findingId}')" class="px-2 fa-solid fa-trash-can cursor-pointer" title="Delete finding"></i></td></td>
             </tr>`
             document.getElementById("findings-table-body").innerHTML += tableRow
         }) 
@@ -901,18 +955,20 @@
         })
     })
 
-    const commandInput = document.getElementById("command");
+    let commandInput = document.getElementById("command");
+    let commandOutput = document.getElementById("commandOutput");
+    let commandContainer = document.getElementById("commandContainer");
     commandInput.focus(); // Focus input onload
 
     commandInput.addEventListener("keydown", function(event) {
         if (event.key === "Enter" && commandInput.value !== "") {
             commandHistoryIndex = 0;
             if (commandInput.value === "clear") {
-                document.getElementById("commandOutput").innerHTML = ""
+                commandOutput.innerHTML = ""
                 ipcRenderer.invoke("processCommand", commandInput.value)
                 commandInput.value = ""
             } else {
-                document.getElementById("commandOutput").innerHTML += `<pre class="font-mono text-gray-400">${xssSanitize(commandInput.value)}</pre>`;
+                commandOutput.innerHTML += `<p class="text-rose-400 font-semibold whitespace-nowrap inline-block pr-2.5">${xssSanitize(globalUsername)}@wagyu #</p><pre class="inline-block font-mono ">${xssSanitize(commandInput.value)}</pre>`;
                 ipcRenderer.invoke("processCommand", commandInput.value)
                 .then((result => {  
                     commandHistory = result.history
@@ -921,13 +977,14 @@
                     output = xssSanitize(output)
 
                     if (type === "error") {
-                        document.getElementById("commandOutput").innerHTML += `<pre class="text-red-600 font-mono">${output}</pre>`;
+                        commandOutput.innerHTML += `<pre class="text-red-600 font-mono">${output}</pre>`;
                     } else if (type === "success") {
-                        document.getElementById("commandOutput").innerHTML += `<pre class="text-green-500 font-mono">${output}</pre>`;
+                        commandOutput.innerHTML += `<pre class="text-green-500 font-mono">${output}</pre>`;
                     }else {
-                        document.getElementById("commandOutput").innerHTML += `<pre class="font-mono">${output}</pre>`;
+                        commandOutput.innerHTML += `<pre class="font-mono">${output}</pre>`;
                     }
 
+                    commandContainer.scrollTop = commandContainer.scrollHeight;
                     commandInput.value = "";
                 }));
             }
@@ -935,7 +992,7 @@
             if (commandHistoryIndex < commandHistory.length) {
                 commandHistoryIndex++;
                 commandInput.value = commandHistory[commandHistory.length - commandHistoryIndex];
-                commandInput.selectionStart = commandInput.selectionEnd = commandInput.value.length;
+                setTimeout(function(){ commandInput.selectionStart = commandInput.selectionEnd = 10000; }, 5);
             }
         } else if(event.key === "ArrowDown") {
             if (commandHistoryIndex > 0) {
@@ -987,6 +1044,46 @@
     *:focus {
         outline: none;
     }
+
+    *::-webkit-scrollbar {
+        width: 15px;
+    }
+
+    *::-webkit-scrollbar-corner {
+        background: rgba(0,0,0,0);
+    }
+
+    *::-webkit-scrollbar-track {
+        background-color: rgba(0,0,0,0);
+    }
+
+    #eventLog::-webkit-scrollbar-thumb {
+        background-color: rgb(135, 156, 173);
+        border-radius: 10px;
+        border: 4px solid rgba(0,0,0,0);
+        background-clip: content-box;
+        min-width: 32px;
+        min-height: 32px;
+    }
+
+    #commandContainer::-webkit-scrollbar-thumb {
+        background-color: rgb(201, 216, 221);
+        border-radius: 10px;
+        border: 4px solid rgba(0,0,0,0);
+        background-clip: content-box;
+        min-width: 32px;
+        min-height: 32px;
+    }
+
+    #tables::-webkit-scrollbar-thumb {
+        background-color: rgb(241, 241, 241);
+        border-radius: 10px;
+        border: 4px solid rgba(0,0,0,0);
+        background-clip: content-box;
+        min-width: 32px;
+        min-height: 32px;
+    }
+    
 </style>
 </body>
 </html>

