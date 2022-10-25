@@ -6,6 +6,10 @@ description: What is Wagyu?
 
 Wagyu is a dynamic cross-site scripting (XSS) payload delivery system with team server abilities.
 
+{% hint style="danger" %}
+Wagyu is still in early stages of development, therefore, you may experiance bugs/incomplete features.
+{% endhint %}
+
 ### Features
 
 * Collaborative team server capabilities
