@@ -34,8 +34,8 @@ module.exports.processCommand = async (req, res) => {
 Available Commands: 
 help - Display this message.
 clear - Clear the terminal.
-generate <server> <callback interval (ms)> - Generate an implant pointing towards a specified server.
-execute <payload> <implant> - Add a payload to an impant's queue.`,
+generate <server> <callback interval (s)> - Generate an implant pointing towards a specified server.
+execute <payload> <host id> - Add a payload to an impant's queue.`,
             type: "info",
             history: await getCommandHistory(username)});
         } else if (command.includes("generate")) {

@@ -24,4 +24,21 @@ async function deleteImplantById(jwt, id) {
     else return false;
 };
 
-module.exports = { getAllImplants, deleteImplantById };
+async function updateImplantInitialPayloadById(jwt, id, payloadId) {
+    const response = await fetch(`${global.server}/api/v1/implants/updateInitialPayload/${id}`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${jwt}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            initialPayload: payloadId
+        })
+    })
+
+    const data = await response.json();
+    if (await data) return data;
+    else return false;
+}
+
+module.exports = { getAllImplants, deleteImplantById, updateImplantInitialPayloadById };

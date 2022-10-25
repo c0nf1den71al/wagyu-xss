@@ -11,6 +11,10 @@ const hostSchema = new Schema({
     currentTab: {
         type: String,
     },
+    associatedImplant: {
+        type: String,
+        required: true,
+    },
     lastCheckIn: {
         type: Date,
         default: Date.now,

@@ -18,7 +18,29 @@ const implantSchema = new Schema({
         type: Number,
         default: 10000,
         required: false
+    },
+    initialPayload: {
+        id: {
+            type: String,
+            required: false,
+            default: ""
+        },
+        name: {
+            type: String,
+            required: false,
+            default: ""
+        }, 
+        payload: {
+            type: String,
+            required: false,
+            default: ""
+        }
     }
+});
+
+implantSchema.pre("save" , function(next) {
+    this.payload = this.payload.split("%%IMPLANTID%%").join(this._id.toString());
+    next();
 });
 
 const Implant = mongoose.model("Implant", implantSchema);
