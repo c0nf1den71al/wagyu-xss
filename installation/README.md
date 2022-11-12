@@ -9,7 +9,7 @@ description: How to install Wagyu.
 First you must clone the repository for Wagyu from github:
 
 ```shell
-git clone https://github.com/d4rkflam1ngo/wagyu-xss
+git clone https://github.com/c0nf1den71al/wagyu-xss
 ```
 
 {% hint style="info" %}
