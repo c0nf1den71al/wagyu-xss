@@ -24,9 +24,12 @@ const createWindow = () => {
 
     const store = new Store();
 
-    if (store.get("server") && store.get("username")) {
+    try {
         global.server = store.get("server");
         global.username = store.get("username");
+    } catch {
+        global.server = "";
+        global.username = "";
     }
     
     ipcMain.on("login", (event, username, password, server) => {

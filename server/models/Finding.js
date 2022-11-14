@@ -21,6 +21,11 @@ const findingSchema = new Schema({
     value: {
         type: String,
         required: [true, "Finding must have a value"]
+    },
+    type: {
+        type: String,
+        required: [true, "Finding must have a type"],
+        enum: ["text", "image"]
     }
 });
 
