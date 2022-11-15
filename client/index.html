@@ -891,18 +891,35 @@
         const minJitter = document.getElementById("create-implant-min-jitter")
         const maxJitter = document.getElementById("create-implant-max-jitter")
         const hostCookie = document.getElementById("create-implant-host-cookie")
+        if(parseInt(maxJitter.value) < parseInt(callbackInterval.value)) {
+            callbackInterval.classList.remove("border-red-500");
+            
+            if ((parseInt(minJitter.value) <= parseInt(maxJitter.value)) && (parseInt(minJitter.value) > -1) && (parseInt(maxJitter.value) > -1)) {
+                minJitter.classList.remove("border-red-500");
+                maxJitter.classList.remove("border-red-500");
 
-        if (server.value !== "") {
-            ipcRenderer.invoke("generateImplant", server.value, initialPayload.value, callbackInterval.value, minJitter.value, maxJitter.value, hostCookie.value)
-            server.value = ""
-            initialPayload.value = ""
-            callbackInterval.value = 300
-            minJitter.value = 30
-            maxJitter.value = 60
-            hostCookie.value = "HID"
-            document.getElementById("createImplantModal").classList.add("hidden")
+                if (server.value !== "") {
+                    document.getElementById("create-implant-server").classList.add("border-red-500")
+                    ipcRenderer.invoke("generateImplant", server.value, initialPayload.value, callbackInterval.value, minJitter.value, maxJitter.value, hostCookie.value)
+                    server.value = ""
+                    initialPayload.value = ""
+                    callbackInterval.value = 300
+                    minJitter.value = 30
+                    maxJitter.value = 60
+                    hostCookie.value = "HID"
+                    document.getElementById("createImplantModal").classList.add("hidden")
+                } else {
+                    document.getElementById("create-implant-server").classList.add("border-red-500")
+                }
+
+            } else {
+                minJitter.classList.add("border-red-500");
+                maxJitter.classList.add("border-red-500");
+            }
+
         } else {
-            document.getElementById("create-implant-server").classList.add("border-red-500")
+            callbackInterval.classList.add("border-red-500");
+            maxJitter.classList.add("border-red-500");
         }
     }
 
@@ -1008,11 +1025,12 @@
             const hostBrowser = xssSanitize(parsedUserAgent.browser)
             const hostOS = xssSanitize(parsedUserAgent.os)
             const hostCurrentTab = xssSanitize(host.currentTab)
+            const offlineAfter = host.offlineAfter
             const diff = Math.round(Math.abs(new Date() - new Date(host.lastCheckIn)) / 1000)
             const hostLastSeen = diff < 60 ? `${diff} seconds ago` : `${Math.round(diff / 60)} minutes ago`
             const tableRow = `<tr class="hover:bg-slate-100 cursor-pointer" draggable="true" ondragend="dragEnd()" ondragstart="drag(event)">
                 <td class="border px-4 py-2 truncate">${hostId}</td>
-                ${diff < 600 ? '<td class="border px-4 py-2 truncate"><a class="h-5 w-5 bg-green-200 text-green-800 rounded-md px-4">Online</a></td>' : '<td class="border px-4 py-2 truncate"><a class="h-5 w-5 bg-red-200 text-red-800 rounded-md px-4">Offline</a></td>'}
+                ${diff < offlineAfter ? '<td class="border px-4 py-2 truncate"><a class="h-5 w-5 bg-green-200 text-green-800 rounded-md px-4">Online</a></td>' : '<td class="border px-4 py-2 truncate"><a class="h-5 w-5 bg-red-200 text-red-800 rounded-md px-4">Offline</a></td>'}
                 <td class="border px-4 py-2 truncate">${hostExternalIP}</td>
                 <td class="border px-4 py-2 truncate">${hostOS}</td>
                 <td class="border px-4 py-2 truncate">${hostBrowser}</td>
