@@ -920,7 +920,7 @@
                 <td class="border px-4 py-2 truncate">${implantServer}</td>
                 <td class="border px-4 py-2 truncate">${initialPayloadName ? initialPayloadName : `None`}</td>
                 <td class="border px-4 py-2 truncate">${implantCallback} Seconds</td>
-                <td class="border px-4 py-2 truncate">${implantMinJitter} - ${implantMaxJitter} Seconds</td>
+                <td class="border px-4 py-2 truncate">± ${implantMinJitter} - ${implantMaxJitter} Seconds</td>
                 <td class="border px-4 py-2 truncate"><i onclick="navigator.clipboard.writeText('${implantLink}')" class="fa-solid fa-copy px-2 cursor-pointer" title="Copy implant link to clipboard"></i><i onclick="shell.openExternal('${implantLink}')" class="fa-solid px-2 fa-arrow-up-right-from-square cursor-pointer" title="Open implant in browser"></i><i onclick="ipcRenderer.invoke('deleteImplantById', '${implantId}')" class="px-2 fa-solid fa-trash-can cursor-pointer" title="Delete implant"></i></td></td>
             </tr>`
             document.getElementById("implants-table-body").innerHTML += tableRow

@@ -14,8 +14,10 @@ services:
       - PORT=3000
       - TOKEN_SECRET=2d57079ad13b2779b0cd17b4fecf94b6
       - TEAMSERVER_URI=http://localhost:3000
+    restart: always
   mongodb:
     image: mongo:latest
+    restart: always
 #    volumes:
 #      - ~/.wagyu/db:/data/db
   mongo_seed:

@@ -19,7 +19,7 @@ async function generateImplant(req, res) {
     // Minify this before production
     const template = `
     let commands = [];
-    let data = {}
+    let data = {};
     let id = "";
 
     function setData(name, value, type) {
@@ -87,8 +87,8 @@ async function generateImplant(req, res) {
                 }).then(response => response.json().then(responseData => {
                     commands = [];
                     responseData.forEach((payload) => {
-                        data = {}
-                        const script = payload.script
+                        data = {};
+                        const script = payload.script;
                         try {
                             if (script.toUpperCase().includes("ALERT")) { // Stops alert hanging the page
                                 setTimeout(function () {
