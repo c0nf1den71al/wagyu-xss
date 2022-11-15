@@ -24,24 +24,7 @@ async function deleteImplantById(jwt, id) {
     else return false;
 };
 
-async function updateImplantInitialPayloadById(jwt, id, payloadId) {
-    const response = await fetch(`${global.server}/api/v1/implants/updateInitialPayload/${id}`, {
-        method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${jwt}`,
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            initialPayload: payloadId
-        })
-    })
-
-    const data = await response.json();
-    if (await data) return data;
-    else return false;
-}
-
-async function generateImplant(jwt, server, initialPayload, callbackInterval, minJitter, maxJitter, hostCookie) {
+async function generateImplant(jwt, server, initialPayloadId, callbackInterval, minJitter, maxJitter, hostCookie) {
     const response = await fetch(`${global.server}/api/v1/implants/create`, {
         method: 'POST',
         headers: {
@@ -50,7 +33,7 @@ async function generateImplant(jwt, server, initialPayload, callbackInterval, mi
         },
         body: JSON.stringify({
             server: server,
-            initialPayload: initialPayload,
+            initialPayloadId: initialPayloadId,
             callbackInterval: callbackInterval,
             minJitter: minJitter,
             maxJitter: maxJitter,
@@ -63,4 +46,4 @@ async function generateImplant(jwt, server, initialPayload, callbackInterval, mi
     else return false;
 }
 
-module.exports = { getAllImplants, deleteImplantById, updateImplantInitialPayloadById , generateImplant};
+module.exports = { getAllImplants, deleteImplantById , generateImplant};
