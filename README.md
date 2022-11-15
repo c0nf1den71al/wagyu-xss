@@ -14,7 +14,6 @@ Please check out the [Wiki](https://wagyu-docs.jamiepegg.com/) for installation 
 - [ ] Delete Hosts
 - [ ] Mark host as offline
 - [ ] Drag to resize?
-- [ ] Implant jitter?
 - [ ] Command prompts are per-host (not one single prompt)
 - [ ] Right click menu
 

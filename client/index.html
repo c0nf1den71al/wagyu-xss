@@ -170,35 +170,35 @@
             </div>
             <div class="flex flex-row self-center overflow-y-scroll">
                 <div class="px-7 py-4 flex flex-col h-full">
-                    <label class="font-medium" for="create-implant-name">Callback Server</label>
-                    <input type="text" placeholder="http://localhost:3000" id="create-implant-name" class="appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5">
-                    <label class="font-medium" for="">Initial Payload</label>
+                    <label class="font-medium" for="create-implant-server">Callback Server</label>
+                    <input type="text" placeholder="http://localhost:3000" id="create-implant-server" class="appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5">
+                    <label class="font-medium" for="create-implant-initial-payload">Initial Payload</label>
                     <select id="create-implant-initial-payload" class="appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5">
                         <option value="">None</option>
                     </select>
                     <div class="flex flex-row space-x-5">
                         <div class="w-1/3">
-                            <label class="font-medium" for="">Callback Interval (s)</label>
-                            <input type="number" placeholder="300" value="300" id="" class="appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5">
+                            <label class="font-medium" for="create-implant-callback-interval">Callback Interval (s)</label>
+                            <input type="number" placeholder="300" value="300" id="create-implant-callback-interval" class="appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5">
                         </div>
                         <div class="w-1/3">
-                            <label class="font-medium" for="">Min Jitter (s)</label>
-                            <input type="number" placeholder="30" value="30" id="" class="appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5">
+                            <label class="font-medium" for="create-implant-min-jitter">Min Jitter (s)</label>
+                            <input type="number" placeholder="30" value="30" id="create-implant-min-jitter" class="appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5">
                         </div>
                         <div class="w-1/3">
-                            <label class="font-medium" for="">Max Jitter (s)</label>
-                            <input type="number" placeholder="60" value="60" id="" class="appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5">
+                            <label class="font-medium" for="create-implant-max-jitter">Max Jitter (s)</label>
+                            <input type="number" placeholder="60" value="60" id="create-implant-max-jitter" class="appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5">
                         </div>
                     </div>
-                    <label class="font-medium" for="">Host ID Cookie</label>
-                    <input type="text" placeholder="HID" value="HID" id="" class="appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5">
+                    <label class="font-medium" for="create-implant-host-cookie">Host ID Cookie</label>
+                    <input type="text" placeholder="HID" value="HID" id="create-implant-host-cookie" class="appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5">
                     <label class="font-medium" for="">Host Registration Endpoint</label>
-                    <input type="text" placeholder="/register" value="/register" id="" class="disabled:text-gray-300 appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5" disabled>
+                    <input type="text" placeholder="/register" value="/register" id="" class="hover:cursor-not-allowed disabled:text-gray-300 appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5" disabled>
                     <label class="font-medium" for="">Host Callback Endpoint</label>
-                    <input type="text" placeholder="/%%id%%" value="/%%id%%" id="" class="disabled:text-gray-300 appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5" disabled>
+                    <input type="text" placeholder="/%%id%%" value="/%%id%%" id="" class="hover:cursor-not-allowed disabled:text-gray-300 appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5" disabled>
                     <div class="flex flex-row w-full justify-end space-x-3 pb-5">
                         <button onclick="document.getElementById('createImplantModal').classList.add('hidden');" class="py-2 px-3 bg-gray-200 text-gray-400 rounded-md font-medium">Back</button>
-                        <button class="py-2 px-3 bg-rose-300 text-rose-800 rounded-md font-medium" onclick="">Create</button>
+                        <button class="py-2 px-3 bg-rose-300 text-rose-800 rounded-md font-medium" onclick="generateImplant()">Create</button>
                     </div>
                 </div>
             </div>
@@ -429,13 +429,14 @@
                             <th class="border font-medium px-4 py-2">Callback Server</th>
                             <th class="border font-medium px-4 py-2">Initial Payload</th>
                             <th class="border font-medium px-4 py-2">Callback Interval</th>
+                            <th class="border font-medium px-4 py-2">Jitter</th>
                             <th class="border font-medium px-4 py-2">Actions</th>
                         </tr>
                         </thead>
                         <tbody id="implants-table-body" class="text-center"></tbody>
                         <tfoot>
                             <tr>
-                                <td class="px-4 py-2 text-slate-300 text-center" colspan="6">Create more implants for them to show here...</td>
+                                <td class="px-4 py-2 text-slate-300 text-center" colspan="7">Create more implants for them to show here...</td>
                             </tr>
                         </tfoot>
                     </table>
@@ -560,6 +561,8 @@
         addButton.classList.remove("hidden");
         addButton.onclick = () => {
             document.getElementById("payloadEditorModal").classList.remove("hidden");
+            document.getElementById('payload-editor-create').classList.remove('hidden');
+            document.getElementById('blank-editor').classList.add('hidden');
         }
     });
 
@@ -875,6 +878,28 @@
         ipcRenderer.invoke("getAllFindings")
     }, 5000);
 
+    function generateImplant() {
+        const server = document.getElementById("create-implant-server")
+        const initialPayload = document.getElementById("create-implant-initial-payload")
+        const callbackInterval = document.getElementById("create-implant-callback-interval")
+        const minJitter = document.getElementById("create-implant-min-jitter")
+        const maxJitter = document.getElementById("create-implant-max-jitter")
+        const hostCookie = document.getElementById("create-implant-host-cookie")
+
+        if (server.value !== "") {
+            ipcRenderer.invoke("generateImplant", server.value, initialPayload.value, callbackInterval.value, minJitter.value, maxJitter.value, hostCookie.value)
+            server.value = ""
+            initialPayload.value = ""
+            callbackInterval.value = 300
+            minJitter.value = 30
+            maxJitter.value = 60
+            hostCookie.value = "HID"
+            document.getElementById("createImplantModal").classList.add("hidden")
+        } else {
+            document.getElementById("create-implant-server").classList.add("border-red-500")
+        }
+    }
+
     ipcRenderer.invoke("getAllImplants")
     ipcRenderer.on("implants", (event, implants, serverDomain) => {
         // Clear current implants from DOM
@@ -887,12 +912,15 @@
             const initialPayloadName = xssSanitize(implant.initialPayload.name)
             const implantLink = xssSanitize(`${serverDomain}/implants/${implantId}.js`)
             const implantCallback = implant.callbackInterval / 1000
+            const implantMinJitter = implant.minJitter / 1000
+            const implantMaxJitter = implant.maxJitter / 1000
             const tableRow = `<tr>
                 <td class="border px-4 py-2 truncate">${implantId}</td>
                 <td class="border px-4 py-2 truncate text-center">${timestamp}</td>
                 <td class="border px-4 py-2 truncate">${implantServer}</td>
-                <td class="border px-4 py-2 truncate">${initialPayloadName}</td>
+                <td class="border px-4 py-2 truncate">${initialPayloadName ? initialPayloadName : `None`}</td>
                 <td class="border px-4 py-2 truncate">${implantCallback} Seconds</td>
+                <td class="border px-4 py-2 truncate">${implantMinJitter} - ${implantMaxJitter} Seconds</td>
                 <td class="border px-4 py-2 truncate"><i onclick="navigator.clipboard.writeText('${implantLink}')" class="fa-solid fa-copy px-2 cursor-pointer" title="Copy implant link to clipboard"></i><i onclick="shell.openExternal('${implantLink}')" class="fa-solid px-2 fa-arrow-up-right-from-square cursor-pointer" title="Open implant in browser"></i><i onclick="ipcRenderer.invoke('deleteImplantById', '${implantId}')" class="px-2 fa-solid fa-trash-can cursor-pointer" title="Delete implant"></i></td></td>
             </tr>`
             document.getElementById("implants-table-body").innerHTML += tableRow
@@ -982,7 +1010,7 @@
             const hostLastSeen = diff < 60 ? `${diff} seconds ago` : `${Math.round(diff / 60)} minutes ago`
             const tableRow = `<tr class="hover:bg-slate-100 cursor-pointer" draggable="true" ondragend="dragEnd()" ondragstart="drag(event)">
                 <td class="border px-4 py-2 truncate">${hostId}</td>
-                ${diff < 300 ? '<td class="border px-4 py-2 truncate"><a class="h-5 w-5 bg-green-200 text-green-800 rounded-md px-4">Online</a></td>' : '<td class="border px-4 py-2 truncate"><a class="h-5 w-5 bg-red-200 text-red-800 rounded-md px-4">Offline</a></td>'}
+                ${diff < 600 ? '<td class="border px-4 py-2 truncate"><a class="h-5 w-5 bg-green-200 text-green-800 rounded-md px-4">Online</a></td>' : '<td class="border px-4 py-2 truncate"><a class="h-5 w-5 bg-red-200 text-red-800 rounded-md px-4">Offline</a></td>'}
                 <td class="border px-4 py-2 truncate">${hostExternalIP}</td>
                 <td class="border px-4 py-2 truncate">${hostOS}</td>
                 <td class="border px-4 py-2 truncate">${hostBrowser}</td>

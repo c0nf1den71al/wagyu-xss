@@ -1,7 +1,7 @@
 const { app, BrowserWindow, ipcMain } = require("electron")
 const { login, checkUser } = require("./helpers/auth")
 const { getAllEventLogs, createEventLog } = require("./helpers/eventLogs")
-const { getAllImplants, deleteImplantById, updateImplantInitialPayloadById } = require("./helpers/implants");
+const { getAllImplants, deleteImplantById, updateImplantInitialPayloadById, generateImplant } = require("./helpers/implants");
 const { getAllPayloads, createPayload, updatePayloadById, deletePayloadById } = require("./helpers/payloads");
 const { getAllHosts } = require("./helpers/hosts");
 const { getAllFindings, deleteFindingById } = require("./helpers/findings");
@@ -69,6 +69,12 @@ const createWindow = () => {
         store.delete("session");
         await createEventLog(jwt, "Team Server", `Operator ${global.username} left the team server`, "warning");
         win.loadFile("login.html");
+    })
+
+    ipcMain.handle("generateImplant", async (event, server, initialPayload, callbackInterval, minJitter, maxJitter, hostCookie) => {
+        const jwt = store.get("session");
+        await generateImplant(jwt, server, initialPayload, callbackInterval * 1000, minJitter * 1000, maxJitter * 1000, hostCookie);
+        event.sender.send("refreshImplants");
     })
 
     ipcMain.handle("getAllImplants", async (event) => {

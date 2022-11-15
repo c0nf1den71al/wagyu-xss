@@ -1,4 +1,3 @@
-const { generateImplant } = require("../controllers/implantControllers");
 const { addPayloadToQueue } = require("../controllers/hostControllers");
 const User = require("../models/User");
 
@@ -34,35 +33,9 @@ module.exports.processCommand = async (req, res) => {
 Available Commands: 
 help - Display this message.
 clear - Clear the terminal.
-generate <server> <callback interval (s)> - Generate an implant pointing towards a specified server.
 execute <payload> <host id> - Add a payload to an impant's queue.`,
             type: "info",
             history: await getCommandHistory(username)});
-        } else if (command.includes("generate")) {
-            const server = command[1];
-            const callbackInterval = command[2] * 1000 || 10000;
-            if (server) {
-                generateImplant(server, callbackInterval).then(async (implant) => {
-                    res.json({
-                        message: `Implant generated: ${process.env.TEAMSERVER_URI}/implants/${implant}.js`,
-                        type: "success",
-                        history: await getCommandHistory(username)
-                    });
-                }).catch(async (err) => {
-                    res.json({
-                        message: err,
-                        type: "error",
-                        history: await getCommandHistory(username)
-                    });
-                });
-            } else {
-                res.json({
-                    message: "Incorrect usage of generate command. Usage: generate <server> <callback interval (s)>",
-                    type: "error",
-                    history: await getCommandHistory(username)
-                });
-            }
-            
         } else if (command.includes("execute")) {
             const payload = command[1];
             const hostId = command[2];
