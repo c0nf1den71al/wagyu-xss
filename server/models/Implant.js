@@ -16,7 +16,22 @@ const implantSchema = new Schema({
     },
     callbackInterval: {
         type: Number,
-        default: 10000,
+        default: 300000,
+        required: false
+    },
+    minJitter: {
+        type: Number,
+        default: 30000,
+        required: false
+    },
+    maxJitter: {
+        type: Number,
+        default: 60000,
+        required: false
+    },
+    hostCookie: {
+        type: String,
+        default: "HID",
         required: false
     },
     initialPayload: {

