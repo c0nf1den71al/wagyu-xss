@@ -614,6 +614,12 @@
         addButton.classList.remove("hidden");
         addButton.onclick = () => {
             document.getElementById("createImplantModal").classList.remove("hidden");
+            ipcRenderer.invoke("getAllPayloads").then(payloads => {
+                document.getElementById("create-implant-initial-payload").innerHTML = "<option value=''>None</option>"
+                payloads.forEach(payload => {
+                    document.getElementById("create-implant-initial-payload").innerHTML += `<option value="${xssSanitize(payload._id.toString())}">${xssSanitize(payload.name)}</option>`
+                })
+            })
         }
     });
 
@@ -963,7 +969,6 @@
         // Clear current payloads from DOM
         document.getElementById("payloads-table-body").innerHTML = "";
         document.getElementById("payload-editor-list").innerHTML = "";
-        document.getElementById("create-implant-initial-payload").innerHTML = "<option>None</option>"
         payloads.forEach(payload => {
             const payloadId = xssSanitize(payload._id.toString())
             const payloadName = xssSanitize(payload.name)
@@ -989,9 +994,6 @@
 
             document.getElementById("payloads-table-body").innerHTML += tableRow
             document.getElementById("payload-editor-list").innerHTML += `<li class="cursor-pointer hover:text-rose-500" onclick="loadPayloadEditor(${JSON.stringify(payload).split('"').join("&quot;")})">${payloadName}</li>`
-
-            document.getElementById("create-implant-initial-payload").innerHTML += `<option value="${payloadId}">${payloadName}</option>`
-
         })
     })
 
@@ -1037,7 +1039,7 @@
             } else {
                 commandOutput.innerHTML += `<p class="text-rose-400 font-semibold whitespace-nowrap inline-block pr-2.5">${xssSanitize(globalUsername)}@wagyu #</p><pre class="inline-block font-mono ">${xssSanitize(commandInput.value)}</pre>`;
                 ipcRenderer.invoke("processCommand", commandInput.value)
-                .then((result => {  
+                .then(result => {  
                     commandHistory = result.history
                     const type = result.type
                     let output = result.message
@@ -1053,7 +1055,7 @@
 
                     commandContainer.scrollTop = commandContainer.scrollHeight;
                     commandInput.value = "";
-                }));
+                });
             }
         } else if(event.key === "ArrowUp") {
             if (commandHistoryIndex < commandHistory.length) {

@@ -1,7 +1,7 @@
 const { app, BrowserWindow, ipcMain } = require("electron")
 const { login, checkUser } = require("./helpers/auth")
 const { getAllEventLogs, createEventLog } = require("./helpers/eventLogs")
-const { getAllImplants, deleteImplantById, updateImplantInitialPayloadById, generateImplant } = require("./helpers/implants");
+const { getAllImplants, deleteImplantById, generateImplant } = require("./helpers/implants");
 const { getAllPayloads, createPayload, updatePayloadById, deletePayloadById } = require("./helpers/payloads");
 const { getAllHosts } = require("./helpers/hosts");
 const { getAllFindings, deleteFindingById } = require("./helpers/findings");
@@ -9,7 +9,6 @@ const { getAllUsers, deleteUserById, createUser, updateUserById } = require("./h
 const processCommand = require("./helpers/commands");
 const path = require("path")
 const Store = require("electron-store");
-const { verifyJwt } = require("../server/controllers/authControllers");
 
 const createWindow = () => {
     const win = new BrowserWindow({
@@ -83,10 +82,6 @@ const createWindow = () => {
         event.sender.send("implants", implants, global.server);
     })
 
-    ipcMain.handle("setInitialPayload", async (event, implantId, payloadId) => {
-        const jwt = store.get("session");
-        const data = await updateImplantInitialPayloadById(jwt, implantId, payloadId);
-    });
     ipcMain.handle("deleteImplantById", async (event, id) => {
         const jwt = store.get("session");
         await deleteImplantById(jwt, id);

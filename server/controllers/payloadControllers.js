@@ -21,6 +21,16 @@ module.exports.getPayloadByName = async (payloadName) => {
     }
 }
 
+module.exports.getPayloadById = async (payloadId) => {
+    try {
+        const payload = await Payload.findById(payloadId);
+        return payload
+    } catch (err) {
+        console.log(err)
+        return err
+    }
+}
+
 module.exports.createPayload = async (req, res) => {
     try {
         const payload = await Payload.create(req.body);

