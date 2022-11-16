@@ -22,9 +22,9 @@ To modify an existing user within Wagyu head to the "**Users**" page within the 
 
 From here you are able to edit the following for the user:
 
-* **Username** - This is used to authenticate the user and will appear in the event logs.&#x20;
+* **Username** - This is used to authenticate the user and will appear in the event logs
 * **Role** - This determines the access level the new account will have. [Learn more](./#user-roles)
-* **Password  -** A password the user will authenticate with.
-* **Confirm Password** - Confirm the password the user will authenticate with.
+* **Password**  - **** A password the user will authenticate with
+* **Confirm Password** - Confirm the password the user will authenticate with
 
 Once you have made the desitred changes, click "**Update**" which will update the existing user account. An overview of all the user can be found within the "**Users**" page in the settings.

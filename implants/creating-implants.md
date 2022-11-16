@@ -14,7 +14,7 @@ description: Creating implants within the Wagyu client
 
 </div>
 
-Within the Wagyu client you can use the "**+**" icon at the top of the implants table to create implants. If you want to get started quickly, Wagyu will autofill all of the fields for you using default values.&#x20;
+Within the Wagyu client you can use the "**+**" icon at the top of the "**Inplants**" tab to create implants. If you want to get started quickly, Wagyu will autofill all of the fields for you using default values.&#x20;
 
 When creating an implant you are able to specify the following fields:
 
@@ -25,7 +25,7 @@ At the time of writing the `Host Registration Endpoint` and `Host Callback Endpo
 | Field                      | Default                      | Description                                                                                                                                          |
 | -------------------------- | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Callback Sever             | Authenticated Server Address | The address which an implant will callback to                                                                                                        |
-| Initial Payload            | `None`                       | The initial payload which will be executed                                                                                                           |
+| Initial Payload            | `None`                       | The initial payload which will be executed. Learn more about initial payloads [here](../payloads/initial-payloads.md)                                |
 | Callback Interval          | `300`                        | The base callback time in seconds. We do not recommend anything less than 10 seconds                                                                 |
 | Min Jitter                 | `30`                         | The minimum jitter to be added/subtracted from the Callback Interval in seconds. More information on jitter can be found [here](./#implant-jitter)   |
 | Max Jitter                 | `60`                         | The maximum jitter to be added/subtracted from the Callback Interval in seconds. More information on jitter can be found [here](./#implant-jitter)   |
@@ -37,4 +37,4 @@ At the time of writing the `Host Registration Endpoint` and `Host Callback Endpo
 If you do not want any jitter please use `0` for both the minimum and maximum jitter values.
 {% endhint %}
 
-After filling in all of the fields click the "**Create**" button to create your implant. Once the implant has been generated it will show in the implants table. _Please note it may take a few seconds to appear in the table._&#x20;
+After filling in all of the fields click the "**Create**" button to create your implant. Once the implant has been generated it will show in the "**Implants**" **** tab. _Please note it may take a few seconds to appear in the tab._&#x20;

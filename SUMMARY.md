@@ -22,3 +22,4 @@
 * [Hosts](hosts/README.md)
   * [Compromising Hosts](hosts/compromising-hosts.md)
   * [Executing Payloads](hosts/executing-payloads.md)
+* [Findings](findings.md)
