@@ -614,9 +614,10 @@
         addButton.classList.remove("hidden");
         addButton.onclick = () => {
             document.getElementById("createImplantModal").classList.remove("hidden");
-            ipcRenderer.invoke("getAllPayloads").then(payloads => {
+            ipcRenderer.invoke("getAllPayloads").then(response => {
+                document.getElementById("create-implant-server").value = xssSanitize(response.server);
                 document.getElementById("create-implant-initial-payload").innerHTML = "<option value=''>None</option>"
-                payloads.forEach(payload => {
+                response.payloads.forEach(payload => {
                     document.getElementById("create-implant-initial-payload").innerHTML += `<option value="${xssSanitize(payload._id.toString())}">${xssSanitize(payload.name)}</option>`
                 })
             })
@@ -954,6 +955,10 @@
         ipcRenderer.invoke("getAllImplants")
     });
 
+    ipcRenderer.on("refreshHosts", () => {
+        ipcRenderer.invoke("getAllHosts")
+    });
+
     ipcRenderer.invoke("getAllFindings")
     ipcRenderer.on("findings", (event, findings) => {
         // Clear current findings from DOM
@@ -1026,21 +1031,26 @@
             const hostOS = xssSanitize(parsedUserAgent.os)
             const hostCurrentTab = xssSanitize(host.currentTab)
             const offlineAfter = host.offlineAfter
+            const markedAsOffline = host.markedAsOffline
             const diff = Math.round(Math.abs(new Date() - new Date(host.lastCheckIn)) / 1000)
             const hostLastSeen = diff < 60 ? `${diff} seconds ago` : `${Math.round(diff / 60)} minutes ago`
             const tableRow = `<tr class="hover:bg-slate-100 cursor-pointer" draggable="true" ondragend="dragEnd()" ondragstart="drag(event)">
                 <td class="border px-4 py-2 truncate">${hostId}</td>
-                ${diff < offlineAfter ? '<td class="border px-4 py-2 truncate"><a class="h-5 w-5 bg-green-200 text-green-800 rounded-md px-4">Online</a></td>' : '<td class="border px-4 py-2 truncate"><a class="h-5 w-5 bg-red-200 text-red-800 rounded-md px-4">Offline</a></td>'}
+                ${diff < offlineAfter && !markedAsOffline ? '<td class="border px-4 py-2 truncate"><a class="h-5 w-5 bg-green-200 text-green-800 rounded-md px-4">Online</a></td>' : '<td class="border px-4 py-2 truncate"><a class="h-5 w-5 bg-red-200 text-red-800 rounded-md px-4">Offline</a></td>'}
                 <td class="border px-4 py-2 truncate">${hostExternalIP}</td>
                 <td class="border px-4 py-2 truncate">${hostOS}</td>
                 <td class="border px-4 py-2 truncate">${hostBrowser}</td>
                 <td class="border px-4 py-2 truncate">${hostCurrentTab}</td>
                 <td class="border px-4 py-2 truncate">${hostLastSeen}</td>
-                <td class="border px-4 py-2 truncate"><i onclick="navigator.clipboard.writeText('${hostId}')" class="fa-solid fa-copy px-2" title="Copy host ID to clipboard"></i><i class="px-2 fa-solid fa-skull-crossbones" title="Mark as offline"></i><i class="px-2 fa-solid fa-trash-can" title="Delete host"></i></td>     
+                <td class="border px-4 py-2 truncate"><i onclick="navigator.clipboard.writeText('${hostId}')" class="fa-solid fa-copy px-2" title="Copy host ID to clipboard"></i><i onclick="markHostAsOffline('${hostId}')" class="px-2 fa-solid fa-skull-crossbones" title="Mark as offline"></i><i class="px-2 fa-solid fa-trash-can" title="Delete host"></i></td>     
             </tr>`
             document.getElementById("hosts-table-body").innerHTML += tableRow
         })
     })
+
+    function markHostAsOffline(hostId) {
+        ipcRenderer.invoke("markHostAsOffline", hostId)
+    }
 
     let commandInput = document.getElementById("command");
     let commandOutput = document.getElementById("commandOutput");

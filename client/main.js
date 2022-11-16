@@ -3,7 +3,7 @@ const { login, checkUser } = require("./helpers/auth")
 const { getAllEventLogs, createEventLog } = require("./helpers/eventLogs")
 const { getAllImplants, deleteImplantById, generateImplant } = require("./helpers/implants");
 const { getAllPayloads, createPayload, updatePayloadById, deletePayloadById } = require("./helpers/payloads");
-const { getAllHosts } = require("./helpers/hosts");
+const { getAllHosts, markHostAsOffline } = require("./helpers/hosts");
 const { getAllFindings, deleteFindingById } = require("./helpers/findings");
 const { getAllUsers, deleteUserById, createUser, updateUserById } = require("./helpers/users");
 const processCommand = require("./helpers/commands");
@@ -94,11 +94,17 @@ const createWindow = () => {
         event.sender.send("hosts", hosts, global.server);
     })
 
+    ipcMain.handle("markHostAsOffline", async (event, id) => {
+        const jwt = store.get("session");
+        await markHostAsOffline(jwt, id);
+        event.sender.send("refreshHosts");
+    })
+
     ipcMain.handle("getAllPayloads", async (event) => {
         const jwt = store.get("session");
         const payloads = await getAllPayloads(jwt);
         event.sender.send("payloads", payloads);
-        return payloads
+        return {payloads: payloads, server: global.server};
     })
 
     ipcMain.handle("getAllEventLogs", async (event) => {

@@ -1,10 +1,15 @@
 # Wagyu XSS
 A dynamic cross-site scripting (XSS) payload delivery system with team server abilities.
 
-- Standalone desktop client GUI
-- Collaborative Team Server
+## Features
+- Collaborative team server capabilities
+- Standalone cross-platform client
+- Fully customisable, users, implants and payloads
+- Dynamic cross-site scripting payload delivery system
+- Exportable team event log
+- Live team chat
 
-![Client Login Page](./images/client-login.png) ![Client Payloads Table](./images/client-payloads.png)
+![Client Login Page](./images/client-login.png) ![Client Hosts Table](./images/client-hosts.png)
 ---
 ## Installation
 Please check out the [Wiki](https://wagyu-docs.jamiepegg.com/) for installation instructions.
@@ -12,7 +17,6 @@ Please check out the [Wiki](https://wagyu-docs.jamiepegg.com/) for installation 
 ## To-do List
 ### Client
 - [ ] Delete Hosts
-- [ ] Mark host as offline
 - [ ] Drag to resize?
 - [ ] Command prompts are per-host (not one single prompt)
 - [ ] Right click menu

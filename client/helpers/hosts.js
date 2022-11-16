@@ -12,6 +12,21 @@ async function getAllHosts(jwt) {
     else return false;
 }
 
+async function markHostAsOffline(jwt, id) {
+    const response = await fetch(`${global.server}/api/v1/hosts/markAsOffline/${id}`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${jwt}`
+        },
+        body: JSON.stringify({
+            username: global.username
+        })
+    })
+    const data = await response.json();
+    if (await data) return data;
+    else return false;
+}
+
 function parseUserAgent(nAgt) {
     var unknown = '-';
     var nameOffset, verOffset;
@@ -225,4 +240,4 @@ function parseUserAgent(nAgt) {
 }
 
 
-module.exports = { getAllHosts, parseUserAgent };
+module.exports = { getAllHosts, parseUserAgent, markHostAsOffline };

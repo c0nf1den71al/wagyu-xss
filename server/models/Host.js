@@ -24,6 +24,11 @@ const hostSchema = new Schema({
         default: 360,
         required: false
     },
+    markedAsOffline: {
+        type: Boolean,
+        default: false,
+        required: false
+    },
     queue: {
         type: Array,
         default: [],
