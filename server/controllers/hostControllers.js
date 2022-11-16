@@ -1,6 +1,7 @@
 const Host = require("../models/Host");
 const Implant = require("../models/Implant");
 const { getPayloadByName } = require("./payloadControllers");
+const { createEvent } = require("./eventControllers");
 
 module.exports.registerHost = async (req, res) => {
     if(req.body.associatedImplant !== undefined){
@@ -11,7 +12,8 @@ module.exports.registerHost = async (req, res) => {
                         externalIP: req.body.externalIP,
                         userAgent: req.body.userAgent,
                         currentTab: req.body.currentTab,
-                        associatedImplant: req.body.associatedImplant
+                        associatedImplant: req.body.associatedImplant,
+                        offlineAfter: implant.callbackInterval/1000 + implant.maxJitter/1000 + 5 // Used to mark a host as offline if it doesnt callback after the interval + maximum jitter + 5 seconds
                     }).then((host) => {
                         res.status(200).json({
                             id: host._id.toString(),
@@ -65,5 +67,19 @@ module.exports.checkIn = async function (hostId){
         await host.save();
     } catch (err) {
         console.log(err);
+    }
+}
+
+module.exports.markHostAsOffline = async function (req, res) { 
+    try {
+        const host = await Host.findById(req.params.id);
+        if (!host.markedAsOffline) {
+            host.markedAsOffline = true;
+            await host.save()
+            createEvent("Team Server", `Host ${host._id.toString()} marked as offline`, "warning");
+            res.status(200).json({message: "Host marked as offline by ${req.body.username}"});
+        }
+    } catch (err) {
+        res.status(400).json(err);
     }
 }

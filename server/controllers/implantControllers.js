@@ -131,9 +131,15 @@ async function generateImplant(req, res) {
                 loop();  
         }, interval);
     }());
-    poll()
-`
-    const initialPayloadData = await getPayloadById(initialPayloadId);
+    poll();
+`;
+
+    let initialPayloadObject = {name: "", payload: ""}
+
+    if(initialPayloadId !== "" && initialPayloadId !== undefined && initialPayloadId !== "undefined") { 
+        const initialPayloadData = await getPayloadById(initialPayloadId);
+        initialPayloadObject = {name: initialPayloadData.name, payload: initialPayloadData.payload}
+    }
 
     try {
         const implant = await Implant.create({
@@ -143,7 +149,7 @@ async function generateImplant(req, res) {
             minJitter: minJitter,
             maxJitter: maxJitter,
             hostCookie: hostCookie,
-            initialPayload: {name: initialPayloadData.name, payload: initialPayloadData.payload}
+            initialPayload: initialPayloadObject
         })
         createEvent("Team Server", `Implant ${implant._id} created`, "info");
         return implant._id.toString();
