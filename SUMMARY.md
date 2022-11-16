@@ -19,4 +19,6 @@
   * [Initial Payloads](payloads/initial-payloads.md)
   * [Modifying Existing Payloads](payloads/modifying-existing-payloads.md)
   * [Deleting Existing Payloads](payloads/deleting-existing-payloads.md)
-* [Hosts](hosts.md)
+* [Hosts](hosts/README.md)
+  * [Compromising Hosts](hosts/compromising-hosts.md)
+  * [Executing Payloads](hosts/executing-payloads.md)
