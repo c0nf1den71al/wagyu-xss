@@ -6,15 +6,7 @@ description: Learn how to create and configure implants within the Wagyu Client
 
 In Wagyu an implant is a small javascript file used by hosts to communicate with the server. Implants are bidirectional and are responsible for sending commands to and from the hosts/server.
 
-<div>
-
 <figure><img src="../.gitbook/assets/client-implants.png" alt=""><figcaption><p>Implants Table</p></figcaption></figure>
-
- 
-
-<figure><img src="../.gitbook/assets/client-create-implant.png" alt=""><figcaption><p>Create Implant</p></figcaption></figure>
-
-</div>
 
 ### Implant Structure and Communication
 

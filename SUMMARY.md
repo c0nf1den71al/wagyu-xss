@@ -12,6 +12,7 @@
   * [Changing User Passwords](users/changing-user-passwords.md)
 * [Implants](implants/README.md)
   * [Creating Implants](implants/creating-implants.md)
+  * [Using Implants](implants/using-implants.md)
   * [Deleting Existing Implants](implants/deleting-existing-implants.md)
 * [Payloads](payloads/README.md)
   * [Payload Functions](payloads/payload-functions.md)
