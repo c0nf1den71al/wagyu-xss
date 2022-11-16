@@ -80,7 +80,7 @@
                             <input type="text" placeholder="Super cool payload!"id="create-payload-description" class="appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5">
                             <div class="flex flex-row space-x-5">
                                 <div class="w-1/3">
-                                    <label class="font-medium" for="">Browser compatibility</label>
+                                    <label class="font-medium" for="">Browser Compatibility</label>
                                     <input type="text" placeholder="All Browsers" id="create-payload-compatibility" class="appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5">
                                 </div>
                                 <div class="w-1/3">
@@ -195,7 +195,7 @@
                     <label class="font-medium" for="">Host Registration Endpoint</label>
                     <input type="text" placeholder="/register" value="/register" id="" class="hover:cursor-not-allowed disabled:text-gray-300 appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5" disabled>
                     <label class="font-medium" for="">Host Callback Endpoint</label>
-                    <input type="text" placeholder="/%%id%%" value="/%%id%%" id="" class="hover:cursor-not-allowed disabled:text-gray-300 appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5" disabled>
+                    <input type="text" placeholder="/<host_id>" value="/<host_id>" id="" class="hover:cursor-not-allowed disabled:text-gray-300 appearance-none border rounded-md w-full py-2 px-3 leading-tight mb-5" disabled>
                     <div class="flex flex-row w-full justify-end space-x-3 pb-5">
                         <button onclick="document.getElementById('createImplantModal').classList.add('hidden');" class="py-2 px-3 bg-gray-200 text-gray-400 rounded-md font-medium">Back</button>
                         <button class="py-2 px-3 bg-rose-300 text-rose-800 rounded-md font-medium" onclick="generateImplant()">Create</button>
@@ -944,7 +944,7 @@
                 <td class="border px-4 py-2 truncate">${implantServer}</td>
                 <td class="border px-4 py-2 truncate">${initialPayloadName ? initialPayloadName : `None`}</td>
                 <td class="border px-4 py-2 truncate">${implantCallback} Seconds</td>
-                <td class="border px-4 py-2 truncate">${implantMinJitter} - ${implantMaxJitter} Seconds</td>
+                <td class="border px-4 py-2 truncate">${implantMaxJitter == 0 && implantMinJitter == 0 ? `None` : `${implantMinJitter} - ${implantMaxJitter} Seconds`}</td>
                 <td class="border px-4 py-2 truncate"><i onclick="navigator.clipboard.writeText('${implantLink}')" class="fa-solid fa-copy px-2 cursor-pointer" title="Copy implant link to clipboard"></i><i onclick="shell.openExternal('${implantLink}')" class="fa-solid px-2 fa-arrow-up-right-from-square cursor-pointer" title="Open implant in browser"></i><i onclick="ipcRenderer.invoke('deleteImplantById', '${implantId}')" class="px-2 fa-solid fa-trash-can cursor-pointer" title="Delete implant"></i></td></td>
             </tr>`
             document.getElementById("implants-table-body").innerHTML += tableRow
