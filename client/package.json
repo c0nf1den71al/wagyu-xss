@@ -1,16 +1,26 @@
 {
-  "name": "client",
+  "name": "wagyu",
   "version": "1.0.0",
-  "description": "",
+  "description": "A dynamic cross-site scripting (XSS) payload delivery system with team server abilities",
   "main": "main.js",
   "scripts": {
     "start": "electron ."
   },
-  "author": "",
-  "license": "ISC",
+  "author": "c0nf1den71al",
+  "license": "MIT",
   "dependencies": {
-    "electron": "^20.1.4",
     "electron-store": "^8.1.0",
     "node-fetch": "^2.6.7"
+  },
+  "build": {
+    "appId": "com.wagyu",
+    "productName": "Wagyu",
+    "win": {
+      "target": "portable",
+      "icon": "build/wagyu.ico" 
+    }
+  },
+  "devDependencies": {
+    "electron": "^21.2.3"
   }
 }

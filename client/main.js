@@ -18,7 +18,7 @@ const createWindow = () => {
             nodeIntegration: true,
             contextIsolation: false,
         },
-        icon: path.join(__dirname, "wagyu.ico")
+        icon: path.join(__dirname, "build/wagyu.ico")
     })
 
     const store = new Store();
@@ -65,8 +65,8 @@ const createWindow = () => {
     })
     
     ipcMain.on("logout", async (event) => {
+        // await createEventLog(jwt, "Team Server", `Operator ${global.username} left the team server`, "warning") HAS ISSUES
         store.delete("session");
-        await createEventLog(jwt, "Team Server", `Operator ${global.username} left the team server`, "warning");
         win.loadFile("login.html");
     })
 
