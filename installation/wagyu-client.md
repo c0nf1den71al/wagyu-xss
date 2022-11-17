@@ -8,7 +8,7 @@ The Wagyu client is built using electron to ensure that the application supports
 
 ### Binary Installation
 
-Download the latest Wagyu Client binary [here](https://github.com/c0nf1den71al/wagyu-xss/releases)
+Download the latest Wagyu Client binaries [here](https://github.com/c0nf1den71al/wagyu-xss/releases)****
 
 ### Manually Installing The Client From Source
 
