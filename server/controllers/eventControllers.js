@@ -23,3 +23,11 @@ module.exports.createEvent = async (createdBy, message, type) => {
     }
 }
 
+module.exports.exportEvents = async (req, res) => {
+    try {
+        const events = await Event.find({});
+        res.status(200).json(events);
+    } catch (err) {
+        res.status(400).json({ errors });
+    }
+}
