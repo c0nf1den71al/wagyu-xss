@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 const bcrypt = require("bcryptjs");
+const sanitize = require("mongo-sanitize");
 
 const userSchema = new Schema({
     timestamp: {
@@ -40,6 +41,9 @@ userSchema.pre("update", async function (next) {
 });
 
 userSchema.statics.login = async function (username, password) {
+    username = sanitize(username);
+    password = sanitize(password);
+    
     const user = await this.findOne({ username });
     if (user) {
         const auth = await bcrypt.compare(password, user.password);
