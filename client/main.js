@@ -135,10 +135,10 @@ const createWindow = () => {
         }
     })
 
-    ipcMain.handle("processCommand", async (event, command) => {
+    ipcMain.handle("processCommand", async (event, command, currentTerminalId) => {
         const jwt = store.get("session");
         try {
-            const result = await processCommand(jwt, command);
+            const result = await processCommand(jwt, command, currentTerminalId);
             event.sender.send("refreshImplants");
             return await result;
         } catch (e) {
