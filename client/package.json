@@ -2,11 +2,12 @@
   "name": "wagyu",
   "version": "1.1.0",
   "description": "A dynamic cross-site scripting (XSS) payload delivery system with team server abilities",
+  "homepage": "https://jamiepegg.com/#wagyu",
+  "author": "c0nf1den71al <me@jamiepegg.com>",
   "main": "main.js",
   "scripts": {
     "start": "electron ."
   },
-  "author": "c0nf1den71al",
   "license": "MIT",
   "dependencies": {
     "electron-store": "^8.1.0",
@@ -17,7 +18,11 @@
     "productName": "Wagyu",
     "win": {
       "target": "portable",
-      "icon": "build/wagyu.ico" 
+      "icon": "build/wagyu.ico"
+    },
+    "linux": {
+      "target": "deb",
+      "icon": "build/wagyu.png"
     }
   },
   "devDependencies": {
