@@ -1,6 +1,6 @@
 const { app, BrowserWindow, ipcMain } = require("electron")
 const { login, checkUser } = require("./helpers/auth")
-const { getAllEventLogs, createEventLog } = require("./helpers/eventLogs")
+const { getAllEventLogs, createEventLog, exportEventLog } = require("./helpers/eventLogs")
 const { getAllImplants, deleteImplantById, generateImplant } = require("./helpers/implants");
 const { getAllPayloads, createPayload, updatePayloadById, deletePayloadById } = require("./helpers/payloads");
 const { getAllHosts, markHostAsOffline } = require("./helpers/hosts");
@@ -197,6 +197,11 @@ const createWindow = () => {
         await deletePayloadById(jwt, id);
         event.sender.send("refreshPayloads");
     });
+
+    ipcMain.on("exportEventLog", (event) => {
+        const jwt = store.get("session");
+        exportEventLog(jwt)
+    })
 
     // win.openDevTools(); // Open DevTools
     win.loadFile("login.html");

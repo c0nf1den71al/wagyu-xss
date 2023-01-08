@@ -23,6 +23,5 @@ Please check out the [Wiki](https://wagyu-docs.jamiepegg.com/) for installation 
 
 ### Server
 - [ ] More operations need to be added to the event log
-- [ ] Export event log option
 - [ ] Obfuscate/Minify payloads
 - [ ] Change database initial seed to a script not container. This will enable the default user to be created with a time.

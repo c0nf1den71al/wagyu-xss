@@ -223,7 +223,7 @@
                     </ul>
                 </div>
                 <div>
-                    <p class="text-gray-300 text-sm">Wagyu XSS Client v1.0.0</p>
+                    <p class="text-gray-300 text-sm">Wagyu XSS Client v1.0.1</p>
                 </div>
             </div>
 
@@ -469,7 +469,7 @@
                 <div class="w-full h-10 flex flex-row bg-white justify-between">
                     <div class="h-full py-2 px-4 bg-rose-200 text-rose-800 cursor-pointer font-medium">Event Log</div>
                     <div class="flex">
-                        <div class="h-full py-2 px-4 bg-slate-100 cursor-pointer font-medium" title="Export event log"><i class="fa-solid fa-download"></i></div>
+                        <div class="h-full py-2 px-4 bg-slate-100 cursor-pointer font-medium" title="Export event log" onclick="exportEventLog()"><i class="fa-solid fa-download"></i></div>
                         <div class="h-full py-2 px-4 bg-slate-100 cursor-pointer font-medium" title="Filter"><i class="fa-solid fa-filter"></i></div>
                     </div>
                 </div>
@@ -1128,6 +1128,10 @@
         event.preventDefault();
         const data = event.dataTransfer.getData("host");
         document.getElementById("command").value += data + " ";
+    }
+
+    function exportEventLog() {
+        ipcRenderer.send("exportEventLog")
     }
 
 </script>
