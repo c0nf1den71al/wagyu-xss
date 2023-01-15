@@ -18,7 +18,6 @@ Please check out the [Wiki](https://wagyu-docs.jamiepegg.com/) for installation 
 ### Client
 - [ ] Delete Hosts
 - [ ] Drag to resize?
-- [ ] Command prompts are per-host (not one single prompt)
 - [ ] Right click menu
 
 ### Server
