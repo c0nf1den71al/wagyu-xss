@@ -9,7 +9,7 @@ A dynamic cross-site scripting (XSS) payload delivery system with team server ab
 - Exportable team event log
 - Live team chat
 
-![Client Login Page](./images/client-login.png) ![Client Hosts Table](./images/client-hosts.png)
+![Client Login Page](./images/client-login.png) ![Client Hosts Table](./images/client-host.png)
 ---
 ## Installation
 Please check out the [Wiki](https://wagyu-docs.jamiepegg.com/) for installation instructions.
@@ -18,7 +18,6 @@ Please check out the [Wiki](https://wagyu-docs.jamiepegg.com/) for installation 
 ### Client
 - [ ] Delete Hosts
 - [ ] Drag to resize?
-- [ ] Command prompts are per-host (not one single prompt)
 - [ ] Right click menu
 
 ### Server
