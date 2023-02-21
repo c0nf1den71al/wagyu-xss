@@ -341,7 +341,7 @@
 
 
     <!-- Navbar -->
-    <div class="flex w-full justify-between p-3.5 shadow-md z-10" style="height: 10%;">
+    <div class="flex w-full bg-white justify-between p-3.5 shadow-md z-10" style="height: 10%;">
             <!-- Brand -->
             <div class="flex items-center">
                 <img class="w-10" src="images/steak.png" alt="Tailwind CSS Logo">
@@ -357,11 +357,11 @@
     <!-- Main -->
     <div class="flex flex-col justify-center" style="height: 90%;">
         <!-- Top -->
-        <div class="h-[60%] flex flex-row">
-            <div class="w-3/4">
+        <div id="top" class="h-[59.75%] flex flex-row"> <!-- 59.75% weird value to stop navbar jumping? -->
+            <div id="tablesContainer" class="w-3/4 overflow-auto">
 
                 <!-- Top bar -->
-                <div class="w-full flex flex-row justify-between h-[9%]">
+                <div class="w-full flex flex-row justify-between h-9">
                     <div class="flex">
                         <div id="hosts-tab" class="h-full py-1.5 px-4 bg-rose-200 text-rose-800 cursor-pointer font-medium">Hosts</div>
                         <div id="implants-tab" class="h-full py-1.5 px-4 cursor-pointer hover:bg-rose-50">Implants</div>
@@ -375,9 +375,9 @@
                 </div>
 
                 <!-- Tables -->
-                <div id="tables" class="overflow-auto h-[91%]">
+                <div id="tables" class="overflow-auto h-full">
                     <!-- Hosts table -->
-                    <table id="hosts-table" class="w-full">
+                    <table id="hosts-table" class="w-full overflow-auto">
                         <thead class="bg-slate-100 sticky top-[-1px]">
                             <tr>
                                 <th class="border font-medium px-4 py-2">ID</th>
@@ -464,22 +464,30 @@
             </div>
 
             <!-- Event Log -->
-            <div class="w-1/4 bg-slate-500 flex flex-col justify-between" onclick="document.getElementById('chatbox').focus()">
+            <div id="eventLogContainer" class="w-1/4 bg-slate-500 flex flex-col justify-between relative" onclick="document.getElementById('chatbox').focus()">
+                <!-- Horizontal Drag Bar -->
+                <div id="horizontal-drag" class="w-1 h-1/4 bg-slate-300 cursor-col-resize rounded-md absolute left-1 z-50 my-auto top-0 bottom-0" id="dragbar"></div>
+
                 <!-- Top bar -->
-                <div class="w-full h-[9%] flex flex-row bg-white justify-between">
+                <div class="w-full h-9 flex flex-row bg-white justify-between">
                     <div class="h-full py-1.5 px-4 bg-rose-200 text-rose-800 cursor-pointer font-medium">Event Log</div>
                     <div class="flex">
                         <div class="h-full py-2 px-4 bg-slate-100 cursor-pointer font-medium" title="Export event log" onclick="exportEventLog()"><i class="fa-solid fa-download"></i></div>
                         <div class="h-full py-2 px-4 bg-slate-100 cursor-pointer font-medium" title="Filter"><i class="fa-solid fa-filter"></i></div>
                     </div>
                 </div>
-                <p id="eventLog" class="text-sm overflow-y-auto break-words whitespace-normal pt-1.5 h-full font-mono"></p>
+                <p id="eventLog" class="text-sm overflow-y-auto break-words whitespace-normal pt-1.5 pl-1.5 h-full font-mono"></p>
                 <input type="text" id="chatbox" class=" text-sm bg-slate-400 px-1.5 py-1 text-white placeholder:text-slate-200" placeholder="Type here to chat...">
             </div>
         </div>
 
+    
         <!-- Terminal -->
-        <div class="h-[40%] bg-slate-100 relative z-0 overflow-hidden">
+        <div id="terminal" class="h-[40%] bg-slate-100 relative z-0 overflow-hidden">
+            
+            <!-- Vertical Drag Bar -->
+            <div id="vertical-drag" class="w-1/4 h-1 bg-slate-400 cursor-row-resize rounded-md absolute top-1 z-50 mx-auto left-0 right-0" id="dragbar"></div>
+
             <!-- Tabs -->
             <div>
                 <div id="tabs" class="absolute top-0 flex flex-row w-full bg-slate-100">
@@ -496,18 +504,18 @@
                 </div>
             </div>
             <!-- Drag and drop overlay -->
-                <div id="dragDropOverlay" class="absolute bg-rose-200 opacity-75 inset-0 p-16 hidden" ondrop="drop(event)" ondragover="allowDrop(event)">
-                    <div class="relative border-4 rounded-md opacity-100 border-rose-800 border-dashed h-full flex justify-center items-center">
-                        <i class="fa-solid fa-plus fa-4x opacity-100 text-rose-800 pr-3"></i>
-                        <p class="opacity-100 text-rose-800 font-semibold text-lg pl-3">Drag a payload here to autofill...</p>
-                    </div>
+            <div id="dragDropOverlay" class="absolute bg-rose-200 opacity-75 inset-0 p-16 hidden" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <div class="relative border-4 rounded-md opacity-100 border-rose-800 border-dashed h-full flex justify-center items-center">
+                    <i class="fa-solid fa-plus fa-3x opacity-100 text-rose-800 pr-3"></i>
+                    <p class="opacity-100 text-rose-800 font-semibold text-lg pl-3">Drag a payload here to autofill...</p>
                 </div>
-                <!-- No terminals overlay -->
-                <div id="noTerminalOverlay" class="absolute bg-slate-100 inset-0 p-16">
-                    <div class="relative opacity-100 h-full flex justify-center items-center">
-                        <p class="opacity-100 text-gray-500 font-semibold text-lg pl-3">Select a compromised host to interact...</p>
-                    </div>
+            </div>
+            <!-- No terminals overlay -->
+            <div id="noTerminalOverlay" class="absolute bg-slate-100 inset-0 p-16">
+                <div class="relative opacity-100 h-full flex justify-center items-center">
+                    <p class="opacity-100 text-gray-500 font-semibold text-lg pl-3">Select a compromised host to interact...</p>
                 </div>
+            </div>
         </div>
     </div>
 </div>
@@ -1225,6 +1233,78 @@
         }
     }
 
+    let VDragBar = document.getElementById("vertical-drag");
+    VDragBar.addEventListener("mousedown", function(e) {
+        e.preventDefault();
+        document.addEventListener("mousemove", VDrag);
+        window.addEventListener("mouseup", function() {
+            document.removeEventListener("mousemove", VDrag);
+        });
+    });
+
+    function VDrag(event) {
+        let height = document.getElementById("terminal").offsetHeight;
+        let newHeight = height - event.movementY;
+        let windowHeight = window.innerHeight * 0.9
+        let maxHeight = windowHeight * 0.75;
+        let minHeight = windowHeight * 0.25;
+        if (newHeight > maxHeight) {
+            newHeight = maxHeight;
+        } else if (newHeight < minHeight) {
+            newHeight = minHeight;
+        }
+        document.getElementById("terminal").style.flex = "0 0 " + newHeight + "px";
+
+        let altHeight = document.getElementById("top").offsetHeight;
+        let newAltHeight = altHeight + event.movementY;
+        let maxAltHeight = windowHeight - maxHeight;
+        let minAltHeight = windowHeight - minHeight;
+        if(newAltHeight < maxAltHeight) {
+            newAltHeight = maxAltHeight;
+        } else if (newAltHeight > minAltHeight) {
+            newAltHeight = minAltHeight;
+        }
+        document.getElementById("top").style.flex = "0 0 " + newAltHeight + "px";
+
+        document.getElementById("tablesContainer").style.height = newAltHeight +"px";
+        document.getElementById("eventLogContainer").style.height = newAltHeight + "px";
+    }
+
+    let HDragBar = document.getElementById("horizontal-drag");
+    HDragBar.addEventListener("mousedown", function(e) {
+        e.preventDefault();
+        document.addEventListener("mousemove", HDrag);
+        window.addEventListener("mouseup", function() {
+            document.removeEventListener("mousemove", HDrag);
+        });
+    });
+
+    function HDrag(event) {
+        let width = document.getElementById("eventLogContainer").offsetWidth;
+        let newWidth = width - event.movementX;
+        let windowWidth = window.innerWidth
+        let maxWidth = windowWidth * 0.8;
+        let minWidth = windowWidth * 0.2;
+        console.log(minWidth)
+        if (newWidth > maxWidth) {
+            newWidth = maxWidth;
+        } else if (newWidth < minWidth) {
+            newWidth = minWidth;
+        }
+        document.getElementById("eventLogContainer").style.flex = "0 0 " + newWidth + "px";
+
+        let altWidth = document.getElementById("tablesContainer").offsetWidth;
+        let newAltWidth = altWidth + event.movementX;
+        let maxAltWidth = windowWidth - maxWidth;
+        let minAltWidth = windowWidth - minWidth;
+        if(newAltWidth < maxAltWidth) {
+            newAltWidth = maxAltWidth;
+        } else if (newAltWidth > minAltWidth) {
+            newAltWidth = minAltWidth;
+        }
+        document.getElementById("tablesContainer").style.flex = "0 0 " + newAltWidth + "px";
+    }
+
 </script>
 <style>
     input::-webkit-outer-spin-button,
@@ -1267,13 +1347,12 @@
         min-height: 32px;
     }
 
-    #tables::-webkit-scrollbar-thumb {
-        background-color: rgb(241, 241, 241);
-        border-radius: 10px;
-        border: 4px solid rgba(0,0,0,0);
-        background-clip: content-box;
-        min-width: 32px;
-        min-height: 32px;
+    #tables::-webkit-scrollbar {
+        display: none;
+    }
+
+   #tablesContainer::-webkit-scrollbar {
+        display: none;
     }
     
 </style>
