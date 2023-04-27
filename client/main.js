@@ -65,7 +65,8 @@ const createWindow = () => {
     })
     
     ipcMain.on("logout", async (event) => {
-        // await createEventLog(jwt, "Team Server", `Operator ${global.username} left the team server`, "warning") HAS ISSUES
+        const jwt = store.get("session")
+        await createEventLog(jwt, "Team Server", `Operator ${global.username} left the team server`, "info")
         store.delete("session");
         win.loadFile("login.html");
     })

