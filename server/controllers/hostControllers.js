@@ -76,8 +76,8 @@ module.exports.markHostAsOffline = async function (req, res) {
         if (!host.markedAsOffline) {
             host.markedAsOffline = true;
             await host.save()
-            createEvent("Team Server", `Host ${host._id.toString()} marked as offline`, "warning");
-            res.status(200).json({message: "Host marked as offline by ${req.body.username}"});
+            createEvent("Team Server", `Host ${host._id.toString()} marked as offline by ${req.body.username}`, "warning");
+            res.status(200).json({message: "Success"});
         }
     } catch (err) {
         res.status(400).json(err);

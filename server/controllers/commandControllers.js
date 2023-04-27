@@ -1,4 +1,6 @@
 const { addPayloadToQueue } = require("../controllers/hostControllers");
+const { getPayloadByName } = require("../controllers/payloadControllers");
+
 const User = require("../models/User");
 
 async function getCommandHistory(username) {
@@ -39,13 +41,21 @@ execute <payload> - Add a payload to an impant's queue.`,
             const payload = command[1];
             const hostId = currentTerminalId
             if (payload && hostId) {
-                res.json({
-                    message: `Adding payload to queue for host: ${hostId}`,
-                    type: "info",
-                    history: await getCommandHistory(username)
-                });
-                addPayloadToQueue(payload, hostId, username);
-                
+                const payloadExists = await getPayloadByName(payload);
+                if (payloadExists) {
+                    res.json({
+                        message: `Adding payload to queue for host: ${hostId}`,
+                        type: "info",
+                        history: await getCommandHistory(username)
+                    });
+                    addPayloadToQueue(payload, hostId, username);
+                } else {
+                    res.json({
+                        message: `Payload '${payload}' does not exist.`,
+                        type: "error",
+                        history: await getCommandHistory(username)
+                    })
+                }
             } else {
                 res.json({
                     message: "Incorrect usage of execute command. Usage: execute <payload>",

