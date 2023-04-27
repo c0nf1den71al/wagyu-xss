@@ -341,7 +341,7 @@
 
 
     <!-- Navbar -->
-    <div class="flex w-full bg-white justify-between p-3.5 shadow-md z-10" style="height: 10%;">
+    <div class="flex w-full bg-white justify-between shadow-[0_2px_4px_-1px_rgba(0,0,0,0.1)] p-3.5  z-10" style="height: 10%;">
             <!-- Brand -->
             <div class="flex items-center">
                 <img class="w-10" src="images/steak.png" alt="Tailwind CSS Logo">
@@ -369,8 +369,8 @@
                         <div id="findings-tab" class="h-full py-1.5 px-4 cursor-pointer hover:bg-rose-50">Findings</div>
                     </div>
                     <div class="flex pr-3">
-                        <div class="h-full py-2 px-2 pt-2.5 font-medium" title="Add"><i id="add-button" class="hidden cursor-pointer fa-solid fa-plus"></i></div>
-                        <div id="refresh" class="h-full py-2 px-2 pt-2.5 font-medium" title="Refresh"><i class="cursor-pointer fa-solid fa-rotate-right"></i></div>
+                        <div class="h-full py-2 px-2 pt-2 font-medium" title="Add"><i id="add-button" class="hidden cursor-pointer fa-solid fa-plus"></i></div>
+                        <div id="refresh" class="h-full py-2 px-2 pt-2 font-medium" title="Refresh"><i class="cursor-pointer fa-solid fa-rotate-right"></i></div>
                     </div>
                 </div>
 
@@ -466,7 +466,7 @@
             <!-- Event Log -->
             <div id="eventLogContainer" class="w-1/4 bg-slate-500 flex flex-col justify-between relative" onclick="document.getElementById('chatbox').focus()">
                 <!-- Horizontal Drag Bar -->
-                <div id="horizontal-drag" class="w-1 h-1/4 bg-slate-300 cursor-col-resize rounded-md absolute left-1 z-50 my-auto top-0 bottom-0" id="dragbar"></div>
+                <div id="horizontal-drag" class="w-1 h-1/4 bg-slate-300 cursor-col-resize rounded-md absolute left-1 z-10 my-auto top-0 bottom-0" id="dragbar"></div>
 
                 <!-- Top bar -->
                 <div class="w-full h-9 flex flex-row bg-white justify-between">
@@ -1253,7 +1253,7 @@
         } else if (newHeight < minHeight) {
             newHeight = minHeight;
         }
-        document.getElementById("terminal").style.flex = "0 0 " + newHeight + "px";
+        document.getElementById("terminal").style.flex = "1 1 " + newHeight + "px";
 
         let altHeight = document.getElementById("top").offsetHeight;
         let newAltHeight = altHeight + event.movementY;
@@ -1264,7 +1264,7 @@
         } else if (newAltHeight > minAltHeight) {
             newAltHeight = minAltHeight;
         }
-        document.getElementById("top").style.flex = "0 0 " + newAltHeight + "px";
+        document.getElementById("top").style.flex = "1 1 " + newAltHeight + "px";
 
         document.getElementById("tablesContainer").style.height = newAltHeight +"px";
         document.getElementById("eventLogContainer").style.height = newAltHeight + "px";
@@ -1291,7 +1291,7 @@
         } else if (newWidth < minWidth) {
             newWidth = minWidth;
         }
-        document.getElementById("eventLogContainer").style.flex = "0 0 " + newWidth + "px";
+        document.getElementById("eventLogContainer").style.flex = "1 1 " + newWidth + "px";
 
         let altWidth = document.getElementById("tablesContainer").offsetWidth;
         let newAltWidth = altWidth + event.movementX;
@@ -1302,8 +1302,12 @@
         } else if (newAltWidth > minAltWidth) {
             newAltWidth = minAltWidth;
         }
-        document.getElementById("tablesContainer").style.flex = "0 0 " + newAltWidth + "px";
+        document.getElementById("tablesContainer").style.flex = "1 1 " + newAltWidth + "px";
     }
+
+    window.addEventListener("resize", function(){
+        document.getElementById("eventLogContainer").style.height = "100%"
+    })
 
 </script>
 <style>

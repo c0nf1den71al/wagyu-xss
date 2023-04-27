@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require("electron")
+const { app, BrowserWindow, ipcMain, ipcRenderer } = require("electron")
 const { login, checkUser } = require("./helpers/auth")
 const { getAllEventLogs, createEventLog, exportEventLog } = require("./helpers/eventLogs")
 const { getAllImplants, deleteImplantById, generateImplant } = require("./helpers/implants");
